@@ -36,7 +36,7 @@ security {
 		}
 		auth {
 			hideUserNotFoundExceptions = true
-			useAuthenticationRequestCredentials = true
+			useAuthPassword = true
 		}
 		context {
 			managerDn = 'cn=admin,dc=example,dc=com'

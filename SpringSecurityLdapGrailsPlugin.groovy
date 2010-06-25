@@ -28,7 +28,7 @@ import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '0.1'
+	String version = '0.1.1'
 	String grailsVersion = '1.2.2 > *'
 	Map dependsOn = ['springSecurityCore': '0.3.1 > *']
 
@@ -149,7 +149,7 @@ class SpringSecurityLdapGrailsPlugin {
 		ldapAuthProvider(LdapAuthenticationProvider, ldapAuthenticator, ldapAuthoritiesPopulator) {
 			userDetailsContextMapper = ldapUserDetailsMapper
 			hideUserNotFoundExceptions = conf.ldap.auth.hideUserNotFoundExceptions // true
-			useAuthenticationRequestCredentials = conf.ldap.auth.useAuthenticationRequestCredentials // true
+			useAuthenticationRequestCredentials = conf.ldap.auth.useAuthPassword // true
 		}
 	}
 
