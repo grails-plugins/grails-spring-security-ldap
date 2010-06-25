@@ -1,0 +1,44 @@
+{note}
+Configuring your LDAP server is beyond the scope of this document. There are many different approaches and this will most likely be done by IT staff. It's assumed here that you already have a running LDAP or Active Directory server.
+{note}
+
+There isn't much that you need to do in your application to use LDAP. Just install this plugin, and configure any required parameters and whatever optional parameters you want in Config.groovy. These are described in detail in [Chapter 3|guide:3. Configuration] but typically you only need to set these properties
+
+{code}
+grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
+grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
+grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=yourcompany,dc=com'
+grails.plugins.springsecurity.ldap.search.base = 'dc=yourcompany,dc=com'
+{code}
+
+Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this
+
+{code}
+grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+{code}
+
+to do an extra database lookup after the LDAP lookup.
+
+Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.
+
+{code}
+grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+{code}
+
+h4. Custom UserDetailsContextMapper
+
+There are three options for mapping LDAP attributes to @UserDetails@ data (as specified by the @grails.plugins.springsecurity.ldap.mapper.userDetailsClass@ config attribute) and hopefully one of those will be sufficient for your needs. If not, it's easy to implement [UserDetailsContextMapper|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html] yourself.
+
+Create a class in @src/groovy@ or @src/java@ that implements [UserDetailsContextMapper|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html] and register it in @grails-app/conf/spring/resources.groovy@:
+
+{code}
+import com.mycompany.myapp.MyUserDetailsContextMapper
+
+beans = {
+   ldapUserDetailsMapper(MyUserDetailsContextMapper) {
+      // bean attributes
+   }
+}
+{code}
+
