@@ -17,7 +17,7 @@ ldap.search.timeLimit | @0@ (unlimited) | The time to wait before the search fai
 ldap.search.attributesToReturn | @null@ (all) | The attributes to return as part of the search
 ldap.authenticator.useBind | @true@ | if @true@ uses a @BindAuthenticator@ to bind as the authenticating user, if @false@ uses a @PasswordComparisonAuthenticator@ to lookup the user login name and compare passwords
 ldap.authenticator.attributesToReturn | @null@ (all) | names of attribute ids to return; use @null@ to return all and an empty list to return none 
-ldap.authenticator.dnPatterns | @null@ (none) | optional pattern(s) used to create DN search patterns, e.g. ["cn={0},ou=people"]
+ldap.authenticator.dnPatterns | @null@ (none) | optional pattern(s) used to create DN search patterns, e.g. \["cn={0},ou=people"\]
 ldap.authenticator.passwordAttributeName | @'userPassword'@ | the name of the password attribute to use when @useBind@ = @false@
 ldap.mapper.convertToUpperCase | @true@ | whether to uppercase retrieved role names (will also be prefixed with "ROLE_")
 ldap.mapper.passwordAttributeName | @'userPassword'@ | password attribute name to use when building the @UserDetails@
