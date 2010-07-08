@@ -8,7 +8,8 @@ There isn't much that you need to do in your application to use LDAP. Just insta
 grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
 grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
 grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
-grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=yourcompany,dc=com'
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase =
+     'ou=groups,dc=yourcompany,dc=com'
 grails.plugins.springsecurity.ldap.search.base = 'dc=yourcompany,dc=com'
 {code}
 
