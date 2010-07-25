@@ -16,7 +16,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		runtime('org.springframework.security:org.springframework.security.ldap:3.0.2.RELEASE') {
+		runtime('org.springframework.security:org.springframework.security.ldap:3.0.3.RELEASE') {
 			excludes 'com.springsource.org.apache.commons.logging',
 			         'org.springframework.beans',
 			         'org.springframework.core',
