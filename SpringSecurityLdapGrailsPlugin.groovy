@@ -28,9 +28,9 @@ import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '0.1.1'
-	String grailsVersion = '1.2.2 > *'
-	Map dependsOn = ['springSecurityCore': '0.3.1 > *']
+	String version = '1.0'
+	String grailsVersion = '1.2.3 > *'
+	Map dependsOn = ['springSecurityCore': '1.0 > *']
 
 	List pluginExcludes = [
 		'docs/**',
@@ -54,7 +54,7 @@ class SpringSecurityLdapGrailsPlugin {
 		println 'Configuring Spring Security LDAP ...'
 
 		SpringSecurityUtils.loadSecondaryConfig 'DefaultLdapSecurityConfig'
-		// have to get again after overlaying DefaultAclSecurityConfig
+		// have to get again after overlaying DefaultLdapSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
 
 		SpringSecurityUtils.registerProvider 'ldapAuthProvider'
