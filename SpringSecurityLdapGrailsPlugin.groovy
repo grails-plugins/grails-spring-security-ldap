@@ -28,7 +28,7 @@ import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0'
+	String version = '1.0.1'
 	String grailsVersion = '1.2.3 > *'
 	Map dependsOn = ['springSecurityCore': '1.0 > *']
 
