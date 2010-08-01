@@ -29,7 +29,6 @@ public class SimpleAuthenticationSource implements AuthenticationSource {
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AuthenticationSource#getCredentials()
 	 */
-	@Override
 	public String getCredentials() {
 		return _password;
 	}
@@ -38,7 +37,6 @@ public class SimpleAuthenticationSource implements AuthenticationSource {
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AuthenticationSource#getPrincipal()
 	 */
-	@Override
 	public String getPrincipal() {
 		return _userDn;
 	}

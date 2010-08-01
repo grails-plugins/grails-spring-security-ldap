@@ -77,7 +77,6 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * {@inheritDoc}
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
-	@Override
 	public void afterPropertiesSet() {
 		Assert.notNull(_userDetailsService, "userDetailsService must be specified");
 		Assert.notNull(_retrieveDatabaseRoles, "retrieveDatabaseRoles must be specified");
