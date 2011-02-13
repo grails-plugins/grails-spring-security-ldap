@@ -51,11 +51,15 @@ class SpringSecurityLdapGrailsPlugin {
 			return
 		}
 
-		println 'Configuring Spring Security LDAP ...'
-
 		SpringSecurityUtils.loadSecondaryConfig 'DefaultLdapSecurityConfig'
 		// have to get again after overlaying DefaultLdapSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
+
+		if (!conf.ldap.active) {
+			return
+		}
+
+		println 'Configuring Spring Security LDAP ...'
 
 		SpringSecurityUtils.registerProvider 'ldapAuthProvider'
 

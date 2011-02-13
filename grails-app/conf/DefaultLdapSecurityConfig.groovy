@@ -14,6 +14,7 @@
  */
 security {
 	ldap {
+		active = true
 		search { 
 			searchSubtree = true
 			base = '' // e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'
