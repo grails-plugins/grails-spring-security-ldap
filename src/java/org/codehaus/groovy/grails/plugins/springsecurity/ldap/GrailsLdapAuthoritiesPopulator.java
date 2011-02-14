@@ -23,6 +23,7 @@ import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 import org.springframework.util.Assert;
 
@@ -49,7 +50,15 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	@Override
 	protected Set<GrantedAuthority> getAdditionalRoles(final DirContextOperations user, final String username) {
 		if (_retrieveDatabaseRoles) {
-			UserDetails dbDetails = _userDetailsService.loadUserByUsername(username, true);
+			UserDetails dbDetails = null;
+			try {
+				dbDetails = _userDetailsService.loadUserByUsername(username, true);
+			}
+			catch (UsernameNotFoundException ignored) {
+				// just looking for roles, so ignore the UsernameNotFoundException
+				return null;
+			}
+
 			if (dbDetails.getAuthorities() != null) {
 				return new HashSet<GrantedAuthority>(dbDetails.getAuthorities());
 			}
