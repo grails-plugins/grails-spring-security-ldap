@@ -25,6 +25,7 @@ import org.springframework.security.ldap.authentication.PasswordComparisonAuthen
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch
 import org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper
+import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
