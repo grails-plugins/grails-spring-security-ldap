@@ -113,6 +113,9 @@ private void runQuickstart() {
 		ant.arg value: 'User'
 		ant.arg value: 'Role'
 	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token') {
+		ant.arg value: 'com.testldap.PersistentLogin'
+	}
 }
 
 private void createProjectFiles() {
@@ -150,6 +153,11 @@ private void createProjectFiles() {
 		it.writeLine "      indexed = ['objectClass', 'uid', 'mail', 'userPassword', 'description']"
 		it.writeLine "   }"
 		it.writeLine "}"
+		it.writeLine "grails.plugins.springsecurity.ldap.useRememberMe = true"
+		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'"
+		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttributeName = 'cn'"
+		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'dc=d1,dc=example,dc=com'"
+		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn'"
 	}
 }
 

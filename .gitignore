@@ -3,3 +3,5 @@
 /testapps.config.groovy
 /target
 /*.log
+/docs
+

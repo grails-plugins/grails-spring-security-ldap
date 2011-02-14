@@ -12,12 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.codehaus.groovy.grails.plugins.springsecurity.GormUserDetailsService
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.DatabaseOnlyLdapAuthoritiesPopulator
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapAuthoritiesPopulator
+import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapRoleMapper
+import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapUserDetailsManager
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.SimpleAuthenticationSource
 
 import org.springframework.ldap.core.support.SimpleDirContextAuthenticationStrategy
+import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource
 import org.springframework.security.ldap.authentication.BindAuthenticator
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider
@@ -32,7 +36,7 @@ class SpringSecurityLdapGrailsPlugin {
 
 	String version = '1.0.2'
 	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = [springSecurityCore: '1.0 > *']
+	Map dependsOn = [springSecurityCore: '1.1 > *']
 
 	List pluginExcludes = [
 		'docs/**',
@@ -145,7 +149,12 @@ class SpringSecurityLdapGrailsPlugin {
 					defaultRole = conf.ldap.authorities.defaultRole
 				}
 				ignorePartialResultException = conf.ldap.authorities.ignorePartialResultException // false
-				userDetailsService = ref('userDetailsService')
+				if (conf.ldap.useRememberMe && conf.ldap.authorities.retrieveDatabaseRoles) {
+					userDetailsService = ref('ldapRememberMeUserDetailsService')
+				}
+				else {
+					userDetailsService = ref('userDetailsService')
+				}
 				retrieveDatabaseRoles = conf.ldap.authorities.retrieveDatabaseRoles // false
 			}
 		}
@@ -154,7 +163,12 @@ class SpringSecurityLdapGrailsPlugin {
 				if (conf.ldap.authorities.defaultRole) {
 					defaultRole = conf.ldap.authorities.defaultRole
 				}
-				userDetailsService = ref('userDetailsService')
+				if (conf.ldap.useRememberMe) {
+					userDetailsService = ref('ldapRememberMeUserDetailsService')
+				}
+				else {
+					userDetailsService = ref('userDetailsService')
+				}
 			}
 		}
 		else {
@@ -165,10 +179,53 @@ class SpringSecurityLdapGrailsPlugin {
 			hideUserNotFoundExceptions = conf.ldap.auth.hideUserNotFoundExceptions // true
 			useAuthenticationRequestCredentials = conf.ldap.auth.useAuthPassword // true
 		}
+
+		if (conf.ldap.useRememberMe) {
+			if (!conf.rememberMe.persistent) {
+				println "\n\nERROR: LDAP remember-me requires persistent remember-me; run the s2-create-persistent-token script to configure this\n\n"
+				System.exit 1 
+			}
+
+			// needed just for database role lookups
+			if (conf.ldap.authorities.retrieveGroupRoles) {
+				ldapRememberMeUserDetailsService(GormUserDetailsService) {
+					sessionFactory = ref('sessionFactory')
+					transactionManager = ref('transactionManager')
+				}
+			}
+
+			String[] detailsAttributesToRetrieve = toStringArray(conf.ldap.rememberMe.detailsManager.attributesToRetrieve) // null - all
+			userDetailsService(GrailsLdapUserDetailsManager, ref('contextSource')) {
+				usernameMapper = ref('ldapUsernameMapper')
+				userDetailsMapper = ref('ldapUserDetailsMapper')
+				roleMapper = ref('ldapRoleMapper')
+				passwordAttributeName = conf.ldap.rememberMe.detailsManager.passwordAttributeName // 'userPassword'
+				groupSearchBase = conf.ldap.rememberMe.detailsManager.groupSearchBase // 'cn=groups'
+				groupRoleAttributeName = conf.ldap.rememberMe.detailsManager.groupRoleAttributeName // 'cn'
+				groupMemberAttributeName = conf.ldap.rememberMe.detailsManager.groupMemberAttributeName // 'uniquemember'
+				if (detailsAttributesToRetrieve != null) {
+					attributesToRetrieve = detailsAttributesToRetrieve
+				}
+			}
+
+			ldapRoleMapper(GrailsLdapRoleMapper) {
+				groupRoleAttributeName = conf.ldap.rememberMe.detailsManager.groupRoleAttributeName // 'cn'
+			}
+
+			ldapUsernameMapper(DefaultLdapUsernameToDnMapper,
+				conf.ldap.rememberMe.usernameMapper.userDnBase,
+				conf.ldap.rememberMe.usernameMapper.usernameAttribute)
+		}
 	}
 
 	private String[] toStringArray(value) {
-		value == null ? null : value as String[]
+		if (value == null) {
+			return null
+		}
+		if (value instanceof String) {
+			value = [value]
+		}
+		value as String[]
 	}
 
 	private Class<?> classForName(String name) {

@@ -44,3 +44,22 @@ ldap.authorities. ignorePartialResultException | @false@ | Whether @PartialResul
 ldap.authorities.defaultRole | none | An optional default role to be assigned to all users
 {table}
 
+h4. Persistent Logins
+
+To use cookies for persistent logins, configure these properties:
+
+{note}
+Just like with non-LDAP persistent tokens, you need to run the @s2-create-persistent-token@ script to create a persistent login domain class and enable the feature.
+{note}
+
+{table}
+*Name* | *Default* | *Meaning*
+ldap.useRememberMe | @false@ | Whether to use persistent logins
+ldap.rememberMe.detailsManager.attributesToRetrieve | @null@ (all) | The attributes to return as part of the search
+ldap.rememberMe.detailsManager.groupMemberAttributeName | 'uniquemember' | The attribute which contains members of a group
+ldap.rememberMe.detailsManager.groupRoleAttributeName | 'cn' | The attribute which corresponds to the role name of a group
+ldap.rememberMe.detailsManager.groupSearchBase | 'ou=groups,dc=example,dc=com' | The DN under which groups are stored
+ldap.rememberMe.detailsManager.passwordAttributeName | 'userPassword' | Password attribute name
+ldap.rememberMe.usernameMapper.userDnBase | none, must be set, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com' | The base name of the DN
+ldap.rememberMe.usernameMapper.usernameAttribute | none, must be set, e.g. 'cn' | the attribute to append for the username component
+{table}
