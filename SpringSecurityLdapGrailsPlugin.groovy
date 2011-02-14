@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.plugins.springsecurity.ldap.DatabaseOnlyLdapAuthoritiesPopulator
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapAuthoritiesPopulator
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.SimpleAuthenticationSource
 
@@ -29,9 +30,9 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.1'
+	String version = '1.0.2'
 	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = ['springSecurityCore': '1.0 > *']
+	Map dependsOn = [springSecurityCore: '1.0 > *']
 
 	List pluginExcludes = [
 		'docs/**',
@@ -146,6 +147,14 @@ class SpringSecurityLdapGrailsPlugin {
 				ignorePartialResultException = conf.ldap.authorities.ignorePartialResultException // false
 				userDetailsService = ref('userDetailsService')
 				retrieveDatabaseRoles = conf.ldap.authorities.retrieveDatabaseRoles // false
+			}
+		}
+		else if (conf.ldap.authorities.retrieveDatabaseRoles) {
+			ldapAuthoritiesPopulator(DatabaseOnlyLdapAuthoritiesPopulator) {
+				if (conf.ldap.authorities.defaultRole) {
+					defaultRole = conf.ldap.authorities.defaultRole
+				}
+				userDetailsService = ref('userDetailsService')
 			}
 		}
 		else {
