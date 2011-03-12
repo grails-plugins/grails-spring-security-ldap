@@ -25,7 +25,6 @@ public class GrailsLdapUserDetailsManager extends LdapUserDetailsManager impleme
 	 * @see org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService#loadUserByUsername(
 	 * 	java.lang.String, boolean)
 	 */
-	@Override
 	public UserDetails loadUserByUsername(final String username, final boolean loadRoles)
 			throws UsernameNotFoundException, DataAccessException {
 		return super.loadUserByUsername(username);
