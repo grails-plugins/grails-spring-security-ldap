@@ -78,7 +78,7 @@ public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopu
 	 * @param defaultRoleName the role name, including any desired prefix.
 	 */
 	public void setDefaultRole(String defaultRoleName) {
-		Assert.notNull(defaultRole, "The defaultRole property cannot be set to null");
+		Assert.notNull(defaultRoleName, "The defaultRole property cannot be set to null");
 		defaultRole = new GrantedAuthorityImpl(defaultRoleName);
 	}
 
