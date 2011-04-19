@@ -34,7 +34,7 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.3'
+	String version = '1.0.4'
 	String grailsVersion = '1.2.3 > *'
 	Map dependsOn = [springSecurityCore: '1.1 > *']
 
@@ -189,8 +189,7 @@ class SpringSecurityLdapGrailsPlugin {
 			// needed just for database role lookups
 			if (conf.ldap.authorities.retrieveGroupRoles) {
 				ldapRememberMeUserDetailsService(GormUserDetailsService) {
-					sessionFactory = ref('sessionFactory')
-					transactionManager = ref('transactionManager')
+					grailsApplication = ref('grailsApplication')
 				}
 			}
 
