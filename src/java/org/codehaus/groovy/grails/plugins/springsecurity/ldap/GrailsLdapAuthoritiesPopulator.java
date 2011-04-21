@@ -22,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
@@ -35,16 +36,31 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	private GrailsUserDetailsService _userDetailsService;
 	private Boolean _retrieveDatabaseRoles;
 
-   /**
-    * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
-    * set as a property.
-    *
-    * @param contextSource supplies the contexts used to search for user roles.
-    * @param groupSearchBase          if this is an empty string the search will be performed from the root DN of the
-    *                                 context factory.
-    */
+	/**
+	 * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
+	 * set as a property.
+	 *
+	 * @param contextSource supplies the contexts used to search for user roles.
+	 * @param groupSearchBase          if this is an empty string the search will be performed from the root DN of the
+	 *                                 context factory.
+	 */
 	public GrailsLdapAuthoritiesPopulator(final ContextSource contextSource, final String groupSearchBase) {
 		super(contextSource, groupSearchBase);
+	}
+
+	@Override
+	public Set<GrantedAuthority> getGroupMembershipRoles(final String userDn, final String username) {
+		Set<GrantedAuthority> roles = super.getGroupMembershipRoles(userDn, username);
+		Set<GrantedAuthority> fixed = new HashSet<GrantedAuthority>();
+		for (GrantedAuthority role : roles) {
+			if (role instanceof GrantedAuthorityImpl && role.getAuthority().indexOf(' ') > -1) {
+				fixed.add(new GrantedAuthorityImpl(role.getAuthority().replaceAll(" ", "_")));
+			}
+			else {
+				fixed.add(role);
+			}
+		}
+		return fixed;
 	}
 
 	@Override

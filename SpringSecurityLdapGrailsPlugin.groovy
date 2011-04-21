@@ -34,7 +34,7 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.4'
+	String version = '1.0.5'
 	String grailsVersion = '1.2.3 > *'
 	Map dependsOn = [springSecurityCore: '1.1 > *']
 
@@ -48,7 +48,7 @@ class SpringSecurityLdapGrailsPlugin {
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
 
-   String documentation = 'http://grails.org/plugin/spring-security-ldap'
+	String documentation = 'http://grails.org/plugin/spring-security-ldap'
 
 	def doWithSpring = {
 

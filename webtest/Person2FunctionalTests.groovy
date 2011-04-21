@@ -33,11 +33,13 @@ class Person2FunctionalTests extends AbstractSecurityWebTest {
 		assertContentContains 'ROLE_USER'
 		assertContentContains 'ROLE_ADMIN'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
+		assertContentDoesNotContain 'ROLE_FOO_BAR'
 
 		get '/secure/users'
 		assertContentContains 'ROLE_USER'
 		assertContentContains 'ROLE_ADMIN'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
+		assertContentDoesNotContain 'ROLE_FOO_BAR'
 
 		get '/secure/superusers'
 		assertContentContains "Sorry, you're not authorized to view this page."

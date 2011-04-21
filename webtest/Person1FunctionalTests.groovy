@@ -1,6 +1,6 @@
 class Person1FunctionalTests extends AbstractSecurityWebTest {
 
-	// person1 has ROLE_USER from LDAP
+	// person1 has ROLE_USER and ROLE_FOO_BAR (from group "foo bar") from LDAP
 
 	void testSecurity() {
 		checkSecuredUrlsNotVisibleWithoutAuth()
@@ -31,6 +31,13 @@ class Person1FunctionalTests extends AbstractSecurityWebTest {
 
 		get '/secure/users'
 		assertContentContains 'ROLE_USER'
+		assertContentContains 'ROLE_FOO_BAR'
+		assertContentDoesNotContain 'ROLE_ADMIN'
+		assertContentDoesNotContain 'ROLE_SUPERUSER'
+
+		get '/secure/fooBar'
+		assertContentContains 'ROLE_USER'
+		assertContentContains 'ROLE_FOO_BAR'
 		assertContentDoesNotContain 'ROLE_ADMIN'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
 

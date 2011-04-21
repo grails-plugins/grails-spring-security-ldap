@@ -17,6 +17,12 @@ objectclass: top
 cn: ADMIN
 uniqueMember: cn=person2,dc=d1,dc=example,dc=com
 
+dn: cn=foo bar,ou=groups,dc=d1,dc=example,dc=com
+objectclass: groupOfUniqueNames
+objectclass: top
+cn: foo bar
+uniqueMember: cn=person1,dc=d1,dc=example,dc=com
+
 dn: cn=person1,dc=d1,dc=example,dc=com
 objectClass: uidObject
 objectClass: person

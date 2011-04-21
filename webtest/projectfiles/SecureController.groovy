@@ -19,6 +19,11 @@ class SecureController {
 		renderRoles()
 	}
 
+	@Secured(['ROLE_FOO_BAR'])
+	def fooBar = {
+		renderRoles()
+	}
+
 	private void renderRoles() {
 		def roles = new StringBuilder('You have these roles: ')
 		for (auth in springSecurityService.principal.authorities) {
