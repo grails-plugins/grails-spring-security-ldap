@@ -27,32 +27,32 @@ Depending on how passwords are encrypted in LDAP you may also need to configure 
 grails.plugins.springsecurity.password.algorithm = 'SHA-256'
 {code}
 
-h4.  Sample For Active Directory Config.groovy
+h4.  Sample Config.groovy settings for Active Directory
 
-Active directory (Win2k8 tested) is a little bit different although still painless if you know what you are doing. See sample config file below with comments:
+Active directory is somewhat different although still relatively painless if you know what you are doing. Use these example configuration options to get started (tested in Windows Server 2008):
 
 {note}
-Obviously remove the values inside and including the [] brackets
+Replace the placeholders inside [] brackets with appropriate values and remove the [] chars
 {note}
 
 {code}
-//ldap config
+// LDAP config
 grails.plugins.springsecurity.ldap.context.managerDn = '[distinguishedName]'
 grails.plugins.springsecurity.ldap.context.managerPassword = '[password]'
 grails.plugins.springsecurity.ldap.context.server = 'ldap://[ip]:[port]/'
-grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true //I found I needed this for active directory for some reason...don't know exactly why yet
+grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
 grails.plugins.springsecurity.ldap.search.base = '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
-grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" //for active directory you need this
-grails.plugins.springsecurity.ldap.search.searchSubtree = true 
-grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions= false
-grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] //extra attributes you want returned though then you need to create some custom classes..only if you want to add roles
-grails.plugins.springsecurity.providerNames=['ldapAuthProvider', 'anonymousAuthenticationProvider'] //This is in case you want to skip loading from db as well and only use ldap
+grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
+grails.plugins.springsecurity.ldap.search.searchSubtree = true
+grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
+grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
+grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider'] // specify this when you want to skip attempting to load from db and only use LDAP
 
-//role specific ldap config
-grails.plugins.springsecurity.ldap.useRememberMe = false //I don't require this, but if you do you have to run another script
+// role-specific LDAP config
+grails.plugins.springsecurity.ldap.useRememberMe = false
 grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
 grails.plugins.springsecurity.ldap.authorities.groupSearchBase ='[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
-grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' //again this is active directory specific.  I'm sure the example ones will work fine for a plain ldap server
+grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' // Active Directory specific - the example settings will work fine for a plain LDAP server
 {code}
 
 h4. Custom UserDetailsContextMapper
@@ -71,77 +71,63 @@ beans = {
 }
 {code}
 
-
-h4.  Sample Custom UserDetailsContextMapper and UserDetails
-
-You need to implement these yourself if you want more data out of ldap.  Keep in mind the values below have been tested on Active Directory for Win2k8.
-
+For example, here's a custom @UserDetailsContextMapper@ that extracts three additional fields from LDAP (fullname, email, and title)
 
 {code}
+package com.mycompany.myapp
 
-import org.springframework.ldap.core.DirContextAdapter;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.ldap.ppolicy.PasswordPolicyControl;
-import org.springframework.security.ldap.ppolicy.PasswordPolicyResponseControl;
+import org.springframework.ldap.core.DirContextAdapter
+import org.springframework.ldap.core.DirContextOperations
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 
-class UMUserDetailsContextMapper implements UserDetailsContextMapper {
+class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-	public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection authority) {
-		UMUserDetails userDetails = new UMUserDetails()
+   UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection authorities) {
 
-		//keep in mind that if field has a null value you need to check or you'll get a null pointer exception
+      String fullname =  ctx.originalAttrs.attrs['name'].values[0]
+      String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
+      String username = ctx.originalAttrs.attrs['samaccountname'].values[0].toString().toLowerCase()
+      def title = ctx.originalAttrs.attrs['title']
 
-		userDetails.fullname =  ctx.originalAttrs.attrs['name'].values[0]
-		userDetails.email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
-		userDetails.username = ctx.originalAttrs.attrs['samaccountname'].values[0].toString().toLowerCase()
-		def title = ctx.originalAttrs.attrs['title']
-		if(title != null)
-			title = ctx.originalAttrs.attrs['title'].values[0]
-		else
-			title = ''
-		userDetails.title = title
-		userDetails.authorities = authority
+      new MyUserDetails(username, null, true, true, true, true,
+                        authorities, fullname, email, title == null ? '' : title.values[0]) {
+   }
 
-		return userDetails
-	}
-
-	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
-		throw new Exception("Only retrieving data from AD is currently supported.  Please contact development")
-	}
-
-}
-
-
-
-{code}
-
-{code}
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-class UMUserDetails implements UserDetails{
-
-	//overwridden instance variables.  must be here!
-	Collection<GrantedAuthority> authorities
-	String password
-	String username
-	boolean accountNonExpired
-	boolean accountNonLocked
-	boolean credentialsNonExpired
-	boolean enabled	
-	
-	//new instance variable 
-	String fullname
-	String email
-	String title
-
-
+   void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
+      throw new IllegalStateException("Only retrieving data from AD is currently supported")
+   }
 }
 {code}
 
+and a custom @UserDetails@ class to hold the extra fields:
 
+{code}
+package com.mycompany.myapp
 
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.User
 
+class MyUserDetails extends User {
 
+   // extra instance variables
+   final String fullname
+   final String email
+   final String title
+
+   MyUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
+         boolean credentialsNonExpired, boolean accountNonLocked,
+         Collection<GrantedAuthority> authorities, String fullname,
+         String email, String title) {
+
+      super(username, password, enabled, accountNonExpired, credentialsNonExpired,
+            accountNonLocked, authorities)
+
+      this.fullname = fullname
+      this.email = email
+      this.title = title
+   }
+}
+{code}
+
+Here we extend the standard Spring Security @User@ class for convenience, but you could also directly implement the interface or use a different base class.
