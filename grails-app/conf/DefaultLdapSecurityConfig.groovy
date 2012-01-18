@@ -59,6 +59,12 @@ security {
 			groupSearchBase = 'ou=groups,dc=example,dc=com'
 			ignorePartialResultException = false
 			defaultRole = null
+			clean {
+				prefix = null
+				suffix = null
+				dashes = false
+				uppercase = false
+			}
 		}
 		useRememberMe = false
 		rememberMe {

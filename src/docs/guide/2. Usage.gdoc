@@ -52,7 +52,10 @@ grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAut
 grails.plugins.springsecurity.ldap.useRememberMe = false
 grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
 grails.plugins.springsecurity.ldap.authorities.groupSearchBase ='[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
-grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' // Active Directory specific - the example settings will work fine for a plain LDAP server
+// If you don't want to support group membership recursion (groups in groups), then use the following setting
+// grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' // Active Directory specific
+// If you wish to support groups with group as members (recursive groups), use the following
+grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(member:1.2.840.113556.1.4.1941:={0})' // Active Directory specific
 {code}
 
 h4. Custom UserDetailsContextMapper
