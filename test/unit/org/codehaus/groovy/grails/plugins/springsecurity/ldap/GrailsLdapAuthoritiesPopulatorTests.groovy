@@ -96,7 +96,7 @@ class GrailsLdapAuthoritiesPopulatorTests extends GrailsUnitTestCase {
 			// the settings should run through all the permutations in one swipe
 			def newRole = grailsLdapAuthoritiesPopulator.cleanRole(testRole)
 
-			def cleanRoleName = 'ROLE_' + roleName.replaceFirst('EnHS-', '').toUpperCase().replaceAll('-', '_')
+			def cleanRoleName = 'ROLE_' + roleName.toUpperCase().replaceAll('-', '_').replaceFirst('ENHS_', '')
 
 			// make sure our test did what we expected it to
 			assert cleanRoleName == newRole.getAuthority()

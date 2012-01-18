@@ -41,8 +41,8 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 
 	private String _roleStripPrefix;
 	private String _roleStripSuffix;
-	private Boolean _roleConvertDashes;
-	private Boolean _roleToUpperCase;
+	private boolean _roleConvertDashes = false;
+	private boolean _roleToUpperCase = false;
 
 	/**
 	 * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
@@ -64,33 +64,22 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 		if (role instanceof GrantedAuthorityImpl) {
 			GrantedAuthorityImpl newRole = (GrantedAuthorityImpl) role;
 
-			// replace dashes
 			if (_roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
+				// replace dashes
 				logger.debug("converting dashes to underscores in authority:" + newRole.getAuthority());
 				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("-", "_"));
-				if (_roleStripPrefix != null && _roleStripPrefix.indexOf('-') > -1) {
-					_roleStripPrefix = _roleStripPrefix.replaceAll("-", "_");
-				}
-				if (_roleStripSuffix != null &&  _roleStripSuffix.indexOf('-') > -1) {
-					_roleStripSuffix = _roleStripSuffix.replaceAll("-", "_");
-				}
 			}
 
-			// convert to upper case
 			if (_roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
+				// convert to upper case
 				logger.debug("converting role to uppercase:" + newRole.getAuthority());
 				newRole = new GrantedAuthorityImpl(newRole.getAuthority().toUpperCase());
-				if (_roleStripPrefix != null && !_roleStripPrefix.toUpperCase().equals(_roleStripPrefix)) {
-					_roleStripPrefix = _roleStripPrefix.toUpperCase();
-				}
-				if (_roleStripSuffix != null && !_roleStripSuffix.toUpperCase().equals(_roleStripSuffix)) {
-					_roleStripSuffix = _roleStripSuffix.toUpperCase();
-				}
 			}
 
 			if (_roleStripPrefix != null) {
 				// strip prefix if found
 				String tempPrefix = "ROLE_" + _roleStripPrefix;
+				logger.debug("looking for prefix '" + _roleStripPrefix + "' to remove from from authority:" + newRole.getAuthority());
 				if (tempPrefix != null && tempPrefix.length() > 0 
 						&& newRole.getAuthority().indexOf(tempPrefix) == 0
 						&& newRole.getAuthority().length() > tempPrefix.length()) {
@@ -102,6 +91,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 
 			if (_roleStripSuffix != null) {
 				// strip suffix if found
+				logger.debug("looking for suffix '" + _roleStripSuffix + "' to remove from from authority:" + newRole.getAuthority());
 				if (_roleStripSuffix != null && _roleStripSuffix.length() > 0 
 						&& newRole.getAuthority().length() > _roleStripSuffix.length()
 						&& newRole.getAuthority().endsWith(_roleStripSuffix)) {
@@ -112,14 +102,14 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 				}
 			}
 
-			// replace spaces
 			if (newRole.getAuthority().indexOf(' ') > -1) {
+				// replace spaces
 				logger.debug("removing spaces from authority:" + newRole.getAuthority());
 				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll(" ", "_"));
 			}
 
-			// replace __
 			while (newRole.getAuthority().indexOf("__") > -1) {
+				// replace __
 				logger.debug("removing double underscores from authority:" + newRole.getAuthority());
 				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("__", "_"));
 			}
@@ -175,6 +165,42 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	}
 
 	/**
+	 * Hooks to adjust prefix string if other cleaning flags are set
+	 */
+	private void updateRoleStripPrefix() {
+		// convert dashes
+		if (_roleConvertDashes) {
+			if (_roleStripPrefix != null && _roleStripPrefix.indexOf('-') > -1) {
+				_roleStripPrefix = _roleStripPrefix.replaceAll("-", "_");
+			}
+		}
+		// To upper case
+		if (_roleToUpperCase) {
+			if (_roleStripPrefix != null && !_roleStripPrefix.toUpperCase().equals(_roleStripPrefix)) {
+				_roleStripPrefix = _roleStripPrefix.toUpperCase();
+			}
+		}
+	}
+
+	/**
+	 * Hooks to adjust suffix string if other cleaning flags are set
+	 */
+	private void updateRoleStripSuffix() {
+		// convert dashes
+		if (_roleConvertDashes) {
+			if (_roleStripSuffix != null && _roleStripSuffix.indexOf('-') > -1) {
+				_roleStripSuffix = _roleStripSuffix.replaceAll("-", "_");
+			}
+		}
+		// To upper case
+		if (_roleToUpperCase) {
+			if (_roleStripSuffix != null && !_roleStripSuffix.toUpperCase().equals(_roleStripSuffix)) {
+				_roleStripSuffix = _roleStripSuffix.toUpperCase();
+			}
+		}
+	}
+
+	/**
 	 * Dependency injection for whether or not to remove a prefix string from a LDAP
 	 * group name if it matches the beginning of the group name, but not the full
 	 * name of the group.
@@ -182,6 +208,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	public void setRoleStripPrefix(final String roleStripPrefix) {
 		_roleStripPrefix = roleStripPrefix;
+		updateRoleStripPrefix();
 	}
 
 	/**
@@ -192,6 +219,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	public void setRoleStripSuffix(final String roleStripSuffix) {
 		_roleStripSuffix = roleStripSuffix;
+		updateRoleStripSuffix();
 	}
 
 	/**
@@ -201,6 +229,8 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	public void setRoleConvertDashes(final boolean roleConvertDashes) {
 		_roleConvertDashes = roleConvertDashes;
+		updateRoleStripPrefix();
+		updateRoleStripSuffix();
 	}
 
 	/**
@@ -210,6 +240,8 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	public void setRoleToUpperCase(final boolean roleToUpperCase) {
 		_roleToUpperCase = roleToUpperCase;
+		updateRoleStripPrefix();
+		updateRoleStripSuffix();
 	}
 
 	/**
