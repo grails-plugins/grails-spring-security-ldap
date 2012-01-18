@@ -156,6 +156,12 @@ class SpringSecurityLdapGrailsPlugin {
 					userDetailsService = ref('userDetailsService')
 				}
 				retrieveDatabaseRoles = conf.ldap.authorities.retrieveDatabaseRoles // false
+				// Use to cleanup LDAP (Active Directory) Group names
+				// Spaces are automatically converted to underscores
+				roleStripPrefix = conf.ldap.authorities.clean.prefix
+				roleStripSuffix = conf.ldap.authorities.clean.suffix
+				roleConvertDashes = conf.ldap.authorities.clean.dashes
+				roleToUpperCase = conf.ldap.authorities.clean.uppercase
 			}
 		}
 		else if (conf.ldap.authorities.retrieveDatabaseRoles) {
@@ -215,6 +221,7 @@ class SpringSecurityLdapGrailsPlugin {
 				conf.ldap.rememberMe.usernameMapper.userDnBase,
 				conf.ldap.rememberMe.usernameMapper.usernameAttribute)
 		}
+		println '...finished configuring Spring Security LDAP'
 	}
 
 	private String[] toStringArray(value) {
