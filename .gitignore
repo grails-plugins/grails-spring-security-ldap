@@ -4,4 +4,7 @@
 /target
 /*.log
 /docs
-
+grails-app/conf/UrlMappings.groovy
+grails-app/i18n/
+test/
+web-app/
