@@ -42,6 +42,11 @@ ldap.authorities. searchSubtree | @true@ | If @true@ a subtree scope search will
 ldap.authorities. groupSearchBase | @'ou=groups,dc=example, dc=com'@ | The base DN from which the search for group membership should be performed
 ldap.authorities. ignorePartialResultException | @false@ | Whether @PartialResultException@s should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals.
 ldap.authorities.defaultRole | none | An optional default role to be assigned to all users
+ldap.authorities.prefix | @'ROLE_'@ | The prefix prepended to group names in order to make them Spring Security Roles.  Changing this is NOT recommended as it can have unforseen consequences within the security filters.
+ldap.authorities.clean.prefix | none | An optional string prefix to strip from the beginning of LDAP group names.  For example, @'EnHS-'@ will change @EnHS-Staff-All@ to @ROLE_Staff-All@
+ldap.authorities.clean.suffix | none | An optional string suffix to strip from the end of LDAP group names.  For example, @'Group'@ will change @Faculty Group@ to @ROLE_Faculty@
+ldap.authorities.clean.dashes | @false@ | Set this to true to replace all dashes with underscores in LDAP group names.  For example, @Staff-All@ will become @ROLE_Staff_All@
+ldap.authorities.clean.uppercase | @false@ |  Set this to true to uppercase all LDAP group names.  For example, @My_Ldap_Group@ will become @ROLE_MY_LDAP_GROUP@
 {table}
 
 h4. Persistent Logins
