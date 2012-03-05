@@ -30,6 +30,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 public class GrailsLdapRoleMapper implements AttributesMapper {
 
 	private String _groupRoleAttributeName;
+	private String _rolePrefix = "ROLE_";
 
 	/**
 	 * {@inheritDoc}
@@ -43,7 +44,7 @@ public class GrailsLdapRoleMapper implements AttributesMapper {
       Object group = ne.next();
       String role = group.toString();
 
-      return new GrantedAuthorityImpl("ROLE_" + role.toUpperCase());
+      return new GrantedAuthorityImpl(_rolePrefix + role.toUpperCase());
 	}
 
 	/**
@@ -53,4 +54,13 @@ public class GrailsLdapRoleMapper implements AttributesMapper {
 	public void setGroupRoleAttributeName(final String name) {
 		_groupRoleAttributeName = name;
 	}
+
+	/**
+	 * Dependency injection for <code>rolePrefix</code>.
+	 * @param rolePrefix defaults to 'ROLE_'.  Changing this is not recommended.
+	 */
+	public void setRolePrefix(final String rolePrefix) {
+		_rolePrefix = rolePrefix;
+	}
+
 }

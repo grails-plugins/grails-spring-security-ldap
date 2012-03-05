@@ -36,6 +36,12 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	private GrailsUserDetailsService _userDetailsService;
 	private Boolean _retrieveDatabaseRoles;
 
+	private String _rolePrefix = "ROLE_";
+	private String _roleStripPrefix;
+	private String _roleStripSuffix;
+	private boolean _roleConvertDashes = false;
+	private boolean _roleToUpperCase = false;
+
 	/**
 	 * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
 	 * set as a property.
@@ -48,17 +54,67 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 		super(contextSource, groupSearchBase);
 	}
 
+	/**
+	 * This cleans a role based on configuration flags set.
+	 * @param role the role to clean
+	 */
+	public GrantedAuthority cleanRole(GrantedAuthority role) {
+		if (role instanceof GrantedAuthorityImpl) {
+			GrantedAuthorityImpl newRole = (GrantedAuthorityImpl) role;
+
+			if (_roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
+				// replace dashes
+				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("-", "_"));
+			}
+
+			if (_roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
+				// convert to upper case
+				newRole = new GrantedAuthorityImpl(newRole.getAuthority().toUpperCase());
+			}
+
+			if (_roleStripPrefix != null) {
+				// strip prefix if found
+				String tempPrefix = _rolePrefix + _roleStripPrefix;
+				if (tempPrefix != null && tempPrefix.length() > 0 
+						&& newRole.getAuthority().indexOf(tempPrefix) == 0
+						&& newRole.getAuthority().length() > tempPrefix.length()) {
+					// replace dashes
+					newRole = new GrantedAuthorityImpl(newRole.getAuthority().replace(tempPrefix, _rolePrefix).trim());
+				}
+			}
+
+			if (_roleStripSuffix != null) {
+				// strip suffix if found
+				if (_roleStripSuffix != null && _roleStripSuffix.length() > 0 
+						&& newRole.getAuthority().length() > _roleStripSuffix.length()
+						&& newRole.getAuthority().endsWith(_roleStripSuffix)) {
+					int roleLength = newRole.getAuthority().length();
+					int suffixLength = _roleStripSuffix.length();
+						newRole = new GrantedAuthorityImpl(newRole.getAuthority().substring(0, roleLength - suffixLength).trim());
+				}
+			}
+
+			if (newRole.getAuthority().indexOf(' ') > -1) {
+				// replace spaces
+				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll(" ", "_"));
+			}
+
+			while (newRole.getAuthority().indexOf("__") > -1) {
+				// replace __
+				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("__", "_"));
+			}
+			return newRole;
+		} else {
+			return role;
+		}
+	}
+
 	@Override
 	public Set<GrantedAuthority> getGroupMembershipRoles(final String userDn, final String username) {
 		Set<GrantedAuthority> roles = super.getGroupMembershipRoles(userDn, username);
 		Set<GrantedAuthority> fixed = new HashSet<GrantedAuthority>();
 		for (GrantedAuthority role : roles) {
-			if (role instanceof GrantedAuthorityImpl && role.getAuthority().indexOf(' ') > -1) {
-				fixed.add(new GrantedAuthorityImpl(role.getAuthority().replaceAll(" ", "_")));
-			}
-			else {
-				fixed.add(role);
-			}
+			fixed.add( cleanRole(role) );
 		}
 		return fixed;
 	}
@@ -96,6 +152,94 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	public void setRetrieveDatabaseRoles(final boolean retrieve) {
 		_retrieveDatabaseRoles = retrieve;
+	}
+
+	/**
+	 * Hooks to adjust prefix string if other cleaning flags are set
+	 */
+	private void updateRoleStripPrefix() {
+		// convert dashes
+		if (_roleConvertDashes) {
+			if (_roleStripPrefix != null && _roleStripPrefix.indexOf('-') > -1) {
+				_roleStripPrefix = _roleStripPrefix.replaceAll("-", "_");
+			}
+		}
+		// To upper case
+		if (_roleToUpperCase) {
+			if (_roleStripPrefix != null && !_roleStripPrefix.toUpperCase().equals(_roleStripPrefix)) {
+				_roleStripPrefix = _roleStripPrefix.toUpperCase();
+			}
+		}
+	}
+
+	/**
+	 * Hooks to adjust suffix string if other cleaning flags are set
+	 */
+	private void updateRoleStripSuffix() {
+		// convert dashes
+		if (_roleConvertDashes) {
+			if (_roleStripSuffix != null && _roleStripSuffix.indexOf('-') > -1) {
+				_roleStripSuffix = _roleStripSuffix.replaceAll("-", "_");
+			}
+		}
+		// To upper case
+		if (_roleToUpperCase) {
+			if (_roleStripSuffix != null && !_roleStripSuffix.toUpperCase().equals(_roleStripSuffix)) {
+				_roleStripSuffix = _roleStripSuffix.toUpperCase();
+			}
+		}
+	}
+
+	/**
+	 * Dependency injection for the name of the rolePrefix to use when creating new roles.
+	 * @param rolePrefix defaults to 'ROLE_'.  Changing this is not recommended.
+	 */
+	public void setRolePrefix(final String rolePrefix) {
+		_rolePrefix = rolePrefix;
+	}
+
+	/**
+	 * Dependency injection for whether or not to remove a prefix string from a LDAP
+	 * group name if it matches the beginning of the group name, but not the full
+	 * name of the group.
+	 * @param roleStripPrefix if not null, this is stripped from the group name before it is made into a role
+	 */
+	public void setRoleStripPrefix(final String roleStripPrefix) {
+		_roleStripPrefix = roleStripPrefix;
+		updateRoleStripPrefix();
+	}
+
+	/**
+	 * Dependency injection for whether or not to remove a suffix string from a LDAP
+	 * group name if it matches the end of the group name, but not the full
+	 * name of the group.
+	 * @param roleStripSuffix if not null, this is stripped from the group name before it is made into a role
+	 */
+	public void setRoleStripSuffix(final String roleStripSuffix) {
+		_roleStripSuffix = roleStripSuffix;
+		updateRoleStripSuffix();
+	}
+
+	/**
+	 * Dependency injection for whether or not to convert all dashes to underscores if found in a
+	 * group name before it is made into a role.
+	 * @param roleConvertDashes if <code>true</code>, all dashes are converted to underscores
+	 */
+	public void setRoleConvertDashes(final boolean roleConvertDashes) {
+		_roleConvertDashes = roleConvertDashes;
+		updateRoleStripPrefix();
+		updateRoleStripSuffix();
+	}
+
+	/**
+	 * Dependency injection for whether or not to convert group names to uppercase before they
+	 * are made into roles.
+	 * @param roleToUpperCase if <code>true</code>, roles are converted to uppercase
+	 */
+	public void setRoleToUpperCase(final boolean roleToUpperCase) {
+		_roleToUpperCase = roleToUpperCase;
+		updateRoleStripPrefix();
+		updateRoleStripSuffix();
 	}
 
 	/**
