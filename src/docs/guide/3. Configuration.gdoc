@@ -16,7 +16,7 @@ ldap.search.derefLink | @false@ | Enables/disables link dereferencing during the
 ldap.search.timeLimit | @0@ (unlimited) | The time to wait before the search fails
 ldap.search. attributesToReturn | @null@ (all) | The attributes to return as part of the search
 ldap.authenticator.useBind | @true@ | if @true@ uses a @BindAuthenticator@ to bind as the authenticating user, if @false@ uses a @PasswordComparisonAuthenticator@ to lookup the user login name and compare passwords
-ldap.authenticator. attributesToReturn | @null@ (all) | names of attribute ids to return; use @null@ to return all and an empty list to return none 
+ldap.authenticator. attributesToReturn | @null@ (all) | names of attribute ids to return; use @null@ to return all and an empty list to return none
 ldap.authenticator.dnPatterns | @null@ (none) | optional pattern(s) used to create DN search patterns, e.g. \["cn={0},ou=people"\]
 ldap.authenticator. passwordAttributeName | @'userPassword'@ | the name of the password attribute to use when @useBind@ = @false@
 ldap.mapper. convertToUpperCase | @true@ | whether to uppercase retrieved role names (will also be prefixed with "ROLE_")
@@ -35,7 +35,7 @@ ldap.context. cacheEnvironmentProperties | @true@ | whether environment properti
 ldap.context. anonymousReadOnly | @false@ | whether an anonymous environment should be used for read-only operations
 ldap.context.referral | @null@ ('ignore') | the method to handle referrals. Can be @'ignore'@ or @'follow'@ to enable referrals to be automatically followed
 ldap.authorities. retrieveGroupRoles | @true@ | whether to infer roles based on group membership
-ldap.authorities. retrieveDatabaseRoles | @false@ | whether to retrieve additional roles from the database using the User/Role many-to-many 
+ldap.authorities. retrieveDatabaseRoles | @false@ | whether to retrieve additional roles from the database using the User/Role many-to-many
 ldap.authorities. groupRoleAttribute | @'cn'@ | The ID of the attribute which contains the role name for a group
 ldap.authorities. groupSearchFilter | @'uniquemember={0}'@ | The pattern to be used for the user search. {0} is the user's DN
 ldap.authorities. searchSubtree | @true@ | If @true@ a subtree scope search will be performed, otherwise a single-level search is used
