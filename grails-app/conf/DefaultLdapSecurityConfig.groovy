@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2006-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 security {
 	ldap {
 		active = true
-		search { 
+		search {
 			searchSubtree = true
 			base = '' // e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'
 			filter = '(uid={0})' //, '(mailNickname={0})'
