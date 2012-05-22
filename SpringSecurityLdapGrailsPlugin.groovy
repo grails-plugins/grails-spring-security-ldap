@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2006-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,8 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.5'
-	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = [springSecurityCore: '1.1 > *']
-
+	String version = '1.0.6.BUILD-SNAPSHOT'
+	String grailsVersion = '1.3.3 > *'
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**'
@@ -47,7 +45,6 @@ class SpringSecurityLdapGrailsPlugin {
 	String authorEmail = 'beckwithb@vmware.com'
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
-
 	String documentation = 'http://grails.org/plugin/spring-security-ldap'
 
 	def doWithSpring = {
@@ -65,7 +62,7 @@ class SpringSecurityLdapGrailsPlugin {
 			return
 		}
 
-		println 'Configuring Spring Security LDAP ...'
+		println '\nConfiguring Spring Security LDAP ...'
 
 		SpringSecurityUtils.registerProvider 'ldapAuthProvider'
 
@@ -183,7 +180,7 @@ class SpringSecurityLdapGrailsPlugin {
 		if (conf.ldap.useRememberMe) {
 			if (!conf.rememberMe.persistent) {
 				println "\n\nERROR: LDAP remember-me requires persistent remember-me; run the s2-create-persistent-token script to configure this\n\n"
-				System.exit 1 
+				System.exit 1
 			}
 
 			// needed just for database role lookups
@@ -215,6 +212,8 @@ class SpringSecurityLdapGrailsPlugin {
 				conf.ldap.rememberMe.usernameMapper.userDnBase,
 				conf.ldap.rememberMe.usernameMapper.usernameAttribute)
 		}
+
+		println '... finished configuring Spring Security LDAP\n'
 	}
 
 	private String[] toStringArray(value) {
