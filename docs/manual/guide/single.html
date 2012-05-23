@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Spring Security LDAP Plugin 1.0.6</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#3.%20Configuration"><strong>3</strong><span>Configuration</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>LDAP authentication support for the Spring Security plugin.</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>Spring Security LDAP Plugin - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> Burt Beckwith</p>
+                            <p><strong>Version:</strong> 1.0.6</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#1.1%20History"><strong>1.1</strong><span>History</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#3.%20Configuration"><strong>3</strong><span>Configuration</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="1. Introduction">1 Introduction</h1>
+The LDAP plugin adds support for LDAP and Active Directory authentication to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core plugin</a>.<p class="paragraph"/>Once you have configured your Grails application as an LDAP client you can delegate authentication to LDAP and not have to manage users' authentication information in your application. By default roles are inferred from LDAP group membership and you can store additional application-specific roles in your database.<p class="paragraph"/>Please refer to the <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/ldap.html" target="blank">Spring Security LDAP documentation</a> for details of the underlying implementation.
+
+
+
+<h2 id="1.1 History">1.1 History</h2>
+<ul class="star">
+<li>Version 1.0.6</li>
+<ul class="star">
+<li>released May 22, 2012</li>
+</ul>
+<li>Version 1.0.5</li>
+<ul class="star">
+<li>released July 31, 2011</li>
+</ul>
+<li>Version 1.0.4</li>
+<ul class="star">
+<li>released April 19, 2011</li>
+</ul>
+<li>Version 1.0.3</li>
+<ul class="star">
+<li>released March 12, 2011</li>
+</ul>
+<li>Version 1.0.2</li>
+<ul class="star">
+<li>released February 14, 2011</li>
+</ul>
+<li>Version 1.0.1</li>
+<ul class="star">
+<li>released August 01, 2010</li>
+</ul>
+<li>Version 1.0</li>
+<ul class="star">
+<li>released July 27, 2010</li>
+</ul>
+<li>Version 0.1</li>
+<ul class="star">
+<li>released June 18, 2010</li>
+</ul></ul><p class="paragraph"/>
+
+
+<h1 id="2. Usage">2 Usage</h1>
+<blockquote class="note">
+Configuring your LDAP server is beyond the scope of this document. There are many different approaches and this will most likely be done by IT staff. It's assumed here that you already have a running LDAP or Active Directory server.
+</blockquote><p class="paragraph"/>There isn't much that you need to do in your application to use LDAP. Just install this plugin, and configure any required parameters and whatever optional parameters you want in Config.groovy. These are described in detail in <a href="../guide/single.html#3.%20Configuration" class="guide">Chapter 3</a> but typically you only need to set these properties<p class="paragraph"/><div class="code"><pre>grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
+grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
+grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase =
+     'ou=groups,dc=yourcompany,dc=com'
+grails.plugins.springsecurity.ldap.search.base = 'dc=yourcompany,dc=com'</pre></div><p class="paragraph"/>Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this<p class="paragraph"/><div class="code"><pre>grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = <span class="java&#45;keyword">true</span></pre></div><p class="paragraph"/>to do an extra database lookup after the LDAP lookup.<p class="paragraph"/>Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugins.springsecurity.password.algorithm = 'SHA&#45;256'</pre></div><p class="paragraph"/><h4> Sample Config.groovy settings for Active Directory</h4><p class="paragraph"/>Active directory is somewhat different although still relatively painless if you know what you are doing. Use these example configuration options to get started (tested in Windows Server 2008):<p class="paragraph"/><blockquote class="note">
+Replace the placeholders inside  brackets with appropriate values and remove the  chars
+</blockquote><p class="paragraph"/><div class="code"><pre>// LDAP config
+grails.plugins.springsecurity.ldap.context.managerDn = '&#91;distinguishedName&#93;'
+grails.plugins.springsecurity.ldap.context.managerPassword = '&#91;password&#93;'
+grails.plugins.springsecurity.ldap.context.server = 'ldap://&#91;ip&#93;:&#91;port&#93;/'
+grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = <span class="java&#45;keyword">true</span> // typically needed <span class="java&#45;keyword">for</span> Active Directory
+grails.plugins.springsecurity.ldap.search.base = '&#91;the base directory to start the search.  usually something like dc=mycompany,dc=com&#93;'
+grails.plugins.springsecurity.ldap.search.filter=<span class="java&#45;quote">"sAMAccountName=&#123;0&#125;"</span> // <span class="java&#45;keyword">for</span> Active Directory you need <span class="java&#45;keyword">this</span>
+grails.plugins.springsecurity.ldap.search.searchSubtree = <span class="java&#45;keyword">true</span>
+grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = <span class="java&#45;keyword">false</span>
+grails.plugins.springsecurity.ldap.search.attributesToReturn = &#91;'mail', 'displayName'&#93; // extra attributes you want returned; see below <span class="java&#45;keyword">for</span> custom classes that access <span class="java&#45;keyword">this</span> data
+grails.plugins.springsecurity.providerNames = &#91;'ldapAuthProvider', 'anonymousAuthenticationProvider'&#93; // specify <span class="java&#45;keyword">this</span> when you want to skip attempting to load from db and only use LDAP<p class="paragraph"/>// role&#45;specific LDAP config
+grails.plugins.springsecurity.ldap.useRememberMe = <span class="java&#45;keyword">false</span>
+grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = <span class="java&#45;keyword">true</span>
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase ='&#91;the base directory to start the search.  usually something like dc=mycompany,dc=com&#93;'
+// If you don't want to support group membership recursion (groups in groups), then use the following setting
+// grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member=&#123;0&#125;' // Active Directory specific
+// If you wish to support groups with group as members (recursive groups), use the following
+grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(member:1.2.840.113556.1.4.1941:=&#123;0&#125;)' // Active Directory specific</pre></div><p class="paragraph"/><h4>Custom UserDetailsContextMapper</h4><p class="paragraph"/>There are three options for mapping LDAP attributes to <code>UserDetails</code> data (as specified by the <code>grails.plugins.springsecurity.ldap.mapper.userDetailsClass</code> config attribute) and hopefully one of those will be sufficient for your needs. If not, it's easy to implement <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html" target="blank">UserDetailsContextMapper</a> yourself.<p class="paragraph"/>Create a class in <code>src/groovy</code> or <code>src/java</code> that implements <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html" target="blank">UserDetailsContextMapper</a> and register it in <code>grails-app/conf/spring/resources.groovy</code>:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> com.mycompany.myapp.MyUserDetailsContextMapper<p class="paragraph"/>beans = &#123;
+   ldapUserDetailsMapper(MyUserDetailsContextMapper) &#123;
+      // bean attributes
+   &#125;
+&#125;</pre></div><p class="paragraph"/>For example, here's a custom <code>UserDetailsContextMapper</code> that extracts three additional fields from LDAP (fullname, email, and title)<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.mycompany.myapp<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.ldap.core.DirContextAdapter
+<span class="java&#45;keyword">import</span> org.springframework.ldap.core.DirContextOperations
+<span class="java&#45;keyword">import</span> org.springframework.security.core.userdetails.UserDetails
+<span class="java&#45;keyword">import</span> org.springframework.security.ldap.userdetails.UserDetailsContextMapper<p class="paragraph"/>class MyUserDetailsContextMapper <span class="java&#45;keyword">implements</span> UserDetailsContextMapper &#123;<p class="paragraph"/>   UserDetails mapUserFromContext(DirContextOperations ctx, <span class="java&#45;object">String</span> username, Collection authorities) &#123;<p class="paragraph"/>      <span class="java&#45;object">String</span> fullname =  ctx.originalAttrs.attrs&#91;'name'&#93;.values&#91;0&#93;
+      <span class="java&#45;object">String</span> email = ctx.originalAttrs.attrs&#91;'mail'&#93;.values&#91;0&#93;.toString().toLowerCase()
+      <span class="java&#45;object">String</span> username = ctx.originalAttrs.attrs&#91;'samaccountname'&#93;.values&#91;0&#93;.toString().toLowerCase()
+      def title = ctx.originalAttrs.attrs&#91;'title'&#93;<p class="paragraph"/>      <span class="java&#45;keyword">new</span> MyUserDetails(username, <span class="java&#45;keyword">null</span>, <span class="java&#45;keyword">true</span>, <span class="java&#45;keyword">true</span>, <span class="java&#45;keyword">true</span>, <span class="java&#45;keyword">true</span>,
+                        authorities, fullname, email, title == <span class="java&#45;keyword">null</span> ? '' : title.values&#91;0&#93;) &#123;
+   &#125;<p class="paragraph"/>   void mapUserToContext(UserDetails user, DirContextAdapter ctx) &#123;
+      <span class="java&#45;keyword">throw</span> <span class="java&#45;keyword">new</span> IllegalStateException(<span class="java&#45;quote">"Only retrieving data from AD is currently supported"</span>)
+   &#125;
+&#125;</pre></div><p class="paragraph"/>and a custom <code>UserDetails</code> class to hold the extra fields:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.mycompany.myapp<p class="paragraph"/><span class="java&#45;keyword">import</span> org.springframework.security.core.GrantedAuthority
+<span class="java&#45;keyword">import</span> org.springframework.security.core.userdetails.User<p class="paragraph"/>class MyUserDetails <span class="java&#45;keyword">extends</span> User &#123;<p class="paragraph"/>   // extra instance variables
+   <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> fullname
+   <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> email
+   <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> title<p class="paragraph"/>   MyUserDetails(<span class="java&#45;object">String</span> username, <span class="java&#45;object">String</span> password, <span class="java&#45;object">boolean</span> enabled, <span class="java&#45;object">boolean</span> accountNonExpired,
+         <span class="java&#45;object">boolean</span> credentialsNonExpired, <span class="java&#45;object">boolean</span> accountNonLocked,
+         Collection&#60;GrantedAuthority&#62; authorities, <span class="java&#45;object">String</span> fullname,
+         <span class="java&#45;object">String</span> email, <span class="java&#45;object">String</span> title) &#123;<p class="paragraph"/>      <span class="java&#45;keyword">super</span>(username, password, enabled, accountNonExpired, credentialsNonExpired,
+            accountNonLocked, authorities)<p class="paragraph"/>      <span class="java&#45;keyword">this</span>.fullname = fullname
+      <span class="java&#45;keyword">this</span>.email = email
+      <span class="java&#45;keyword">this</span>.title = title
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Here we extend the standard Spring Security <code>User</code> class for convenience, but you could also directly implement the interface or use a different base class.
+
+
+
+<h1 id="3. Configuration">3 Configuration</h1>
+<blockquote class="note">
+Any property overrides must be specified in <code>grails-app/conf/Config.groovy</code> using the <code>grails.plugins.springsecurity</code> suffix, for example
+<div class="code"><pre>grails.plugins.springsecurity.ldap.search.searchSubtree = <span class="java&#45;keyword">true</span></pre></div>
+</blockquote><p class="paragraph"/>There are several configuration options for the LDAP plugin. In practice the defaults are fine and only a few will need to be overridden.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>ldap.search.searchSubtree</td><td><code>true</code></td><td>If <code>true</code> then searches the entire subtree as identified by context, if false (the default) then only searches the level identified by the context.</td></tr><tr class="table-even"><td>ldap.search.base</td><td>''</td><td>Context name to search in, relative to the base of the configured ContextSource, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'</td></tr><tr class="table-odd"><td>ldap.search.filter</td><td><code>'(uid={0})'</code></td><td>The filter expression used in the user search</td></tr><tr class="table-even"><td>ldap.search.derefLink</td><td><code>false</code></td><td>Enables/disables link dereferencing during the search</td></tr><tr class="table-odd"><td>ldap.search.timeLimit</td><td><code>0</code> (unlimited)</td><td>The time to wait before the search fails</td></tr><tr class="table-even"><td>ldap.search. attributesToReturn</td><td><code>null</code> (all)</td><td>The attributes to return as part of the search</td></tr><tr class="table-odd"><td>ldap.authenticator.useBind</td><td><code>true</code></td><td>if <code>true</code> uses a <code>BindAuthenticator</code> to bind as the authenticating user, if <code>false</code> uses a <code>PasswordComparisonAuthenticator</code> to lookup the user login name and compare passwords</td></tr><tr class="table-even"><td>ldap.authenticator. attributesToReturn</td><td><code>null</code> (all)</td><td>names of attribute ids to return; use <code>null</code> to return all and an empty list to return none</td></tr><tr class="table-odd"><td>ldap.authenticator.dnPatterns</td><td><code>null</code> (none)</td><td>optional pattern(s) used to create DN search patterns, e.g. &#91;"cn={0},ou=people"&#93;</td></tr><tr class="table-even"><td>ldap.authenticator. passwordAttributeName</td><td><code>'userPassword'</code></td><td>the name of the password attribute to use when <code>useBind</code> = <code>false</code></td></tr><tr class="table-odd"><td>ldap.mapper. convertToUpperCase</td><td><code>true</code></td><td>whether to uppercase retrieved role names (will also be prefixed with "ROLE_")</td></tr><tr class="table-even"><td>ldap.mapper. passwordAttributeName</td><td><code>'userPassword'</code></td><td>password attribute name to use when building the <code>UserDetails</code></td></tr><tr class="table-odd"><td>ldap.mapper. userDetailsClass</td><td><code>null</code> (create an LdapUserDetailsImpl)</td><td>use <code>'person'</code> to create a <code>Person</code>, <code>'inetOrgPerson'</code> to create an <code>InetOrgPerson</code>, or <code>null</code> to create an <code>LdapUserDetailsImpl</code></td></tr><tr class="table-even"><td>ldap.mapper.roleAttributes</td><td><code>null</code></td><td>optional names of role attributes</td></tr><tr class="table-odd"><td>ldap.auth. hideUserNotFoundExceptions</td><td><code>true</code></td><td>if <code>true</code> throw a new <code>BadCredentialsException</code>, otherwise throw the original <code>UsernameNotFoundException</code></td></tr><tr class="table-even"><td>ldap.auth.useAuthPassword</td><td><code>true</code></td><td>If <code>true</code> use the supplied password as the credentials in the authenticationtoken, otherwise obtain the password from the UserDetails object (it may not be possible to read the password from the directory)</td></tr><tr class="table-odd"><td>ldap.context.managerDn</td><td><code>'cn=admin,dc=example, dc=com'</code></td><td>DN to authenticate with</td></tr><tr class="table-even"><td>ldap.context. managerPassword</td><td><code>'secret'</code></td><td>username to authenticate with</td></tr><tr class="table-odd"><td>ldap.context.server</td><td><code>'ldap://localhost:389'</code></td><td>address of the LDAP server</td></tr><tr class="table-even"><td>ldap.context. contextFactoryClassName</td><td><code>com.sun.jndi.ldap. LdapCtxFactory</code></td><td>class name of the <code>InitialContextFactory</code> to use</td></tr><tr class="table-odd"><td>ldap.context. dirObjectFactoryClassName</td><td><a href="http://static.springsource.org/spring-ldap/site/apidocs/org/springframework/ldap/core/support/DefaultDirObjectFactory.html" target="blank">DefaultDirObjectFactory</a></td><td>class name of the <code></code>DirObjectFactory to use</td></tr><tr class="table-even"><td>ldap.context. baseEnvironmentProperties</td><td>none</td><td>extra context properties</td></tr><tr class="table-odd"><td>ldap.context. cacheEnvironmentProperties</td><td><code>true</code></td><td>whether environment properties should be cached between requsts</td></tr><tr class="table-even"><td>ldap.context. anonymousReadOnly</td><td><code>false</code></td><td>whether an anonymous environment should be used for read-only operations</td></tr><tr class="table-odd"><td>ldap.context.referral</td><td><code>null</code> ('ignore')</td><td>the method to handle referrals. Can be <code>'ignore'</code> or <code>'follow'</code> to enable referrals to be automatically followed</td></tr><tr class="table-even"><td>ldap.authorities. retrieveGroupRoles</td><td><code>true</code></td><td>whether to infer roles based on group membership</td></tr><tr class="table-odd"><td>ldap.authorities. retrieveDatabaseRoles</td><td><code>false</code></td><td>whether to retrieve additional roles from the database using the User/Role many-to-many</td></tr><tr class="table-even"><td>ldap.authorities. groupRoleAttribute</td><td><code>'cn'</code></td><td>The ID of the attribute which contains the role name for a group</td></tr><tr class="table-odd"><td>ldap.authorities. groupSearchFilter</td><td><code>'uniquemember={0}'</code></td><td>The pattern to be used for the user search. {0} is the user's DN</td></tr><tr class="table-even"><td>ldap.authorities. searchSubtree</td><td><code>true</code></td><td>If <code>true</code> a subtree scope search will be performed, otherwise a single-level search is used</td></tr><tr class="table-odd"><td>ldap.authorities. groupSearchBase</td><td><code>'ou=groups,dc=example, dc=com'</code></td><td>The base DN from which the search for group membership should be performed</td></tr><tr class="table-even"><td>ldap.authorities. ignorePartialResultException</td><td><code>false</code></td><td>Whether <code>PartialResultException</code>s should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals.</td></tr><tr class="table-odd"><td>ldap.authorities.defaultRole</td><td>none</td><td>An optional default role to be assigned to all users</td></tr><tr class="table-even"><td>ldap.authorities.prefix</td><td><code>'ROLE_'</code></td><td>The prefix prepended to group names in order to make them Spring Security Roles.  Changing this is NOT recommended as it can have unforseen consequences within the security filters.</td></tr><tr class="table-odd"><td>ldap.authorities.clean.prefix</td><td>none</td><td>An optional string prefix to strip from the beginning of LDAP group names.  For example, <code>'EnHS-'</code> will change <code>EnHS-Staff-All</code> to <code>ROLE_Staff-All</code></td></tr><tr class="table-even"><td>ldap.authorities.clean.suffix</td><td>none</td><td>An optional string suffix to strip from the end of LDAP group names.  For example, <code>'Group'</code> will change <code>Faculty Group</code> to <code>ROLE_Faculty</code></td></tr><tr class="table-odd"><td>ldap.authorities.clean.dashes</td><td><code>false</code></td><td>Set this to true to replace all dashes with underscores in LDAP group names.  For example, <code>Staff-All</code> will become <code>ROLE_Staff_All</code></td></tr><tr class="table-even"><td>ldap.authorities.clean.uppercase</td><td><code>false</code></td><td>Set this to true to uppercase all LDAP group names.  For example, <code>My_Ldap_Group</code> will become <code>ROLE_MY_LDAP_GROUP</code></td></tr></table><p class="paragraph"/><h4>Persistent Logins</h4><p class="paragraph"/>To use cookies for persistent logins, configure these properties:<p class="paragraph"/><blockquote class="note">
+Just like with non-LDAP persistent tokens, you need to run the <code>s2-create-persistent-token</code> script to create a persistent login domain class and enable the feature.
+</blockquote><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>ldap.useRememberMe</td><td><code>false</code></td><td>Whether to use persistent logins</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.attributesToRetrieve</td><td><code>null</code> (all)</td><td>The attributes to return as part of the search</td></tr><tr class="table-odd"><td>ldap.rememberMe.detailsManager.groupMemberAttributeName</td><td>'uniquemember'</td><td>The attribute which contains members of a group</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.groupRoleAttributeName</td><td>'cn'</td><td>The attribute which corresponds to the role name of a group</td></tr><tr class="table-odd"><td>ldap.rememberMe.detailsManager.groupSearchBase</td><td>'ou=groups,dc=example,dc=com'</td><td>The DN under which groups are stored</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.passwordAttributeName</td><td>'userPassword'</td><td>Password attribute name</td></tr><tr class="table-odd"><td>ldap.rememberMe.usernameMapper.userDnBase</td><td>none, must be set, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'</td><td>The base name of the DN</td></tr><tr class="table-even"><td>ldap.rememberMe.usernameMapper.usernameAttribute</td><td>none, must be set, e.g. 'cn'</td><td>the attribute to append for the username component</td></tr></table>
+
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Configuration 1.0.6</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/2.%20Usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/3.%20Configuration.html"><strong>3</strong><span>Configuration</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>LDAP authentication support for the Spring Security plugin.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/2.%20Usage.html">&lt;&lt; <strong>2</strong><span>Usage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>3 Configuration - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 1.0.6</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="3. Configuration">3 Configuration</h1>
+<blockquote class="note">
+Any property overrides must be specified in <code>grails-app/conf/Config.groovy</code> using the <code>grails.plugins.springsecurity</code> suffix, for example
+<div class="code"><pre>grails.plugins.springsecurity.ldap.search.searchSubtree = <span class="java&#45;keyword">true</span></pre></div>
+</blockquote><p class="paragraph"/>There are several configuration options for the LDAP plugin. In practice the defaults are fine and only a few will need to be overridden.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>ldap.search.searchSubtree</td><td><code>true</code></td><td>If <code>true</code> then searches the entire subtree as identified by context, if false (the default) then only searches the level identified by the context.</td></tr><tr class="table-even"><td>ldap.search.base</td><td>''</td><td>Context name to search in, relative to the base of the configured ContextSource, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'</td></tr><tr class="table-odd"><td>ldap.search.filter</td><td><code>'(uid={0})'</code></td><td>The filter expression used in the user search</td></tr><tr class="table-even"><td>ldap.search.derefLink</td><td><code>false</code></td><td>Enables/disables link dereferencing during the search</td></tr><tr class="table-odd"><td>ldap.search.timeLimit</td><td><code>0</code> (unlimited)</td><td>The time to wait before the search fails</td></tr><tr class="table-even"><td>ldap.search. attributesToReturn</td><td><code>null</code> (all)</td><td>The attributes to return as part of the search</td></tr><tr class="table-odd"><td>ldap.authenticator.useBind</td><td><code>true</code></td><td>if <code>true</code> uses a <code>BindAuthenticator</code> to bind as the authenticating user, if <code>false</code> uses a <code>PasswordComparisonAuthenticator</code> to lookup the user login name and compare passwords</td></tr><tr class="table-even"><td>ldap.authenticator. attributesToReturn</td><td><code>null</code> (all)</td><td>names of attribute ids to return; use <code>null</code> to return all and an empty list to return none</td></tr><tr class="table-odd"><td>ldap.authenticator.dnPatterns</td><td><code>null</code> (none)</td><td>optional pattern(s) used to create DN search patterns, e.g. &#91;"cn={0},ou=people"&#93;</td></tr><tr class="table-even"><td>ldap.authenticator. passwordAttributeName</td><td><code>'userPassword'</code></td><td>the name of the password attribute to use when <code>useBind</code> = <code>false</code></td></tr><tr class="table-odd"><td>ldap.mapper. convertToUpperCase</td><td><code>true</code></td><td>whether to uppercase retrieved role names (will also be prefixed with "ROLE_")</td></tr><tr class="table-even"><td>ldap.mapper. passwordAttributeName</td><td><code>'userPassword'</code></td><td>password attribute name to use when building the <code>UserDetails</code></td></tr><tr class="table-odd"><td>ldap.mapper. userDetailsClass</td><td><code>null</code> (create an LdapUserDetailsImpl)</td><td>use <code>'person'</code> to create a <code>Person</code>, <code>'inetOrgPerson'</code> to create an <code>InetOrgPerson</code>, or <code>null</code> to create an <code>LdapUserDetailsImpl</code></td></tr><tr class="table-even"><td>ldap.mapper.roleAttributes</td><td><code>null</code></td><td>optional names of role attributes</td></tr><tr class="table-odd"><td>ldap.auth. hideUserNotFoundExceptions</td><td><code>true</code></td><td>if <code>true</code> throw a new <code>BadCredentialsException</code>, otherwise throw the original <code>UsernameNotFoundException</code></td></tr><tr class="table-even"><td>ldap.auth.useAuthPassword</td><td><code>true</code></td><td>If <code>true</code> use the supplied password as the credentials in the authenticationtoken, otherwise obtain the password from the UserDetails object (it may not be possible to read the password from the directory)</td></tr><tr class="table-odd"><td>ldap.context.managerDn</td><td><code>'cn=admin,dc=example, dc=com'</code></td><td>DN to authenticate with</td></tr><tr class="table-even"><td>ldap.context. managerPassword</td><td><code>'secret'</code></td><td>username to authenticate with</td></tr><tr class="table-odd"><td>ldap.context.server</td><td><code>'ldap://localhost:389'</code></td><td>address of the LDAP server</td></tr><tr class="table-even"><td>ldap.context. contextFactoryClassName</td><td><code>com.sun.jndi.ldap. LdapCtxFactory</code></td><td>class name of the <code>InitialContextFactory</code> to use</td></tr><tr class="table-odd"><td>ldap.context. dirObjectFactoryClassName</td><td><a href="http://static.springsource.org/spring-ldap/site/apidocs/org/springframework/ldap/core/support/DefaultDirObjectFactory.html" target="blank">DefaultDirObjectFactory</a></td><td>class name of the <code></code>DirObjectFactory to use</td></tr><tr class="table-even"><td>ldap.context. baseEnvironmentProperties</td><td>none</td><td>extra context properties</td></tr><tr class="table-odd"><td>ldap.context. cacheEnvironmentProperties</td><td><code>true</code></td><td>whether environment properties should be cached between requsts</td></tr><tr class="table-even"><td>ldap.context. anonymousReadOnly</td><td><code>false</code></td><td>whether an anonymous environment should be used for read-only operations</td></tr><tr class="table-odd"><td>ldap.context.referral</td><td><code>null</code> ('ignore')</td><td>the method to handle referrals. Can be <code>'ignore'</code> or <code>'follow'</code> to enable referrals to be automatically followed</td></tr><tr class="table-even"><td>ldap.authorities. retrieveGroupRoles</td><td><code>true</code></td><td>whether to infer roles based on group membership</td></tr><tr class="table-odd"><td>ldap.authorities. retrieveDatabaseRoles</td><td><code>false</code></td><td>whether to retrieve additional roles from the database using the User/Role many-to-many</td></tr><tr class="table-even"><td>ldap.authorities. groupRoleAttribute</td><td><code>'cn'</code></td><td>The ID of the attribute which contains the role name for a group</td></tr><tr class="table-odd"><td>ldap.authorities. groupSearchFilter</td><td><code>'uniquemember={0}'</code></td><td>The pattern to be used for the user search. {0} is the user's DN</td></tr><tr class="table-even"><td>ldap.authorities. searchSubtree</td><td><code>true</code></td><td>If <code>true</code> a subtree scope search will be performed, otherwise a single-level search is used</td></tr><tr class="table-odd"><td>ldap.authorities. groupSearchBase</td><td><code>'ou=groups,dc=example, dc=com'</code></td><td>The base DN from which the search for group membership should be performed</td></tr><tr class="table-even"><td>ldap.authorities. ignorePartialResultException</td><td><code>false</code></td><td>Whether <code>PartialResultException</code>s should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals.</td></tr><tr class="table-odd"><td>ldap.authorities.defaultRole</td><td>none</td><td>An optional default role to be assigned to all users</td></tr><tr class="table-even"><td>ldap.authorities.prefix</td><td><code>'ROLE_'</code></td><td>The prefix prepended to group names in order to make them Spring Security Roles.  Changing this is NOT recommended as it can have unforseen consequences within the security filters.</td></tr><tr class="table-odd"><td>ldap.authorities.clean.prefix</td><td>none</td><td>An optional string prefix to strip from the beginning of LDAP group names.  For example, <code>'EnHS-'</code> will change <code>EnHS-Staff-All</code> to <code>ROLE_Staff-All</code></td></tr><tr class="table-even"><td>ldap.authorities.clean.suffix</td><td>none</td><td>An optional string suffix to strip from the end of LDAP group names.  For example, <code>'Group'</code> will change <code>Faculty Group</code> to <code>ROLE_Faculty</code></td></tr><tr class="table-odd"><td>ldap.authorities.clean.dashes</td><td><code>false</code></td><td>Set this to true to replace all dashes with underscores in LDAP group names.  For example, <code>Staff-All</code> will become <code>ROLE_Staff_All</code></td></tr><tr class="table-even"><td>ldap.authorities.clean.uppercase</td><td><code>false</code></td><td>Set this to true to uppercase all LDAP group names.  For example, <code>My_Ldap_Group</code> will become <code>ROLE_MY_LDAP_GROUP</code></td></tr></table><p class="paragraph"/><h4>Persistent Logins</h4><p class="paragraph"/>To use cookies for persistent logins, configure these properties:<p class="paragraph"/><blockquote class="note">
+Just like with non-LDAP persistent tokens, you need to run the <code>s2-create-persistent-token</code> script to create a persistent login domain class and enable the feature.
+</blockquote><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>ldap.useRememberMe</td><td><code>false</code></td><td>Whether to use persistent logins</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.attributesToRetrieve</td><td><code>null</code> (all)</td><td>The attributes to return as part of the search</td></tr><tr class="table-odd"><td>ldap.rememberMe.detailsManager.groupMemberAttributeName</td><td>'uniquemember'</td><td>The attribute which contains members of a group</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.groupRoleAttributeName</td><td>'cn'</td><td>The attribute which corresponds to the role name of a group</td></tr><tr class="table-odd"><td>ldap.rememberMe.detailsManager.groupSearchBase</td><td>'ou=groups,dc=example,dc=com'</td><td>The DN under which groups are stored</td></tr><tr class="table-even"><td>ldap.rememberMe.detailsManager.passwordAttributeName</td><td>'userPassword'</td><td>Password attribute name</td></tr><tr class="table-odd"><td>ldap.rememberMe.usernameMapper.userDnBase</td><td>none, must be set, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com'</td><td>The base name of the DN</td></tr><tr class="table-even"><td>ldap.rememberMe.usernameMapper.usernameAttribute</td><td>none, must be set, e.g. 'cn'</td><td>the attribute to append for the username component</td></tr></table>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/2.%20Usage.html">&lt;&lt; <strong>2</strong><span>Usage</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>
