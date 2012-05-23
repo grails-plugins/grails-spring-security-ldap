@@ -40,6 +40,7 @@ class SpringSecurityLdapGrailsPlugin {
 		'docs/**',
 		'src/docs/**'
 	]
+	List loadAfter = ['springSecurityCore']
 
 	String author = 'Burt Beckwith'
 	String authorEmail = 'beckwithb@vmware.com'
