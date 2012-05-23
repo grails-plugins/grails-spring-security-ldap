@@ -1,4 +1,4 @@
-/* Copyright 2006-2010 the original author or authors.
+/* Copyright 2006-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ functionalTestPluginVersion = '1.2.7'
 appName = null
 grailsHome = null
 dotGrails = null
+grailsVersion = null
 projectDir = null
 pluginVersion = null
 pluginZip = null
@@ -39,7 +40,7 @@ target(createLdapTestApps: 'Creates LDAP test apps') {
 	}
 
 	new ConfigSlurper().parse(configFile.text).each { name, config ->
-		echo "\nCreating app based on configuration $name: ${config.flatten()}\n"
+		printMessage "\nCreating app based on configuration $name: ${config.flatten()}\n"
 		init name, config
 		createApp()
 		installPlugins()
@@ -68,7 +69,8 @@ private void init(String name, config) {
 	projectDir = config.projectDir
 	appName = 'spring-security-ldap-test-' + name
 	testprojectRoot = "$projectDir/$appName"
-	dotGrails = config.dotGrails
+	grailsVersion = config.grailsVersion
+	dotGrails = config.dotGrails + '/' + grailsVersion
 }
 
 private void createApp() {
@@ -85,25 +87,40 @@ private void createApp() {
 
 private void installPlugins() {
 
-	// install plugins in local dir to make optional STS setup easier
-	// also configure the functional tests to run in order
-	new File("$testprojectRoot/grails-app/conf/BuildConfig.groovy").withWriterAppend {
-		it.writeLine 'grails.project.plugins.dir = "plugins"'
+	File buildConfig = new File(testprojectRoot, 'grails-app/conf/BuildConfig.groovy')
+	String contents = buildConfig.text
+
+	contents = contents.replace('grails.project.class.dir = "target/classes"', "grails.project.work.dir = 'target'")
+	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
+	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
+
+	if (grailsVersion.startsWith('1')) {
+		contents = contents.replace('grailsCentral()', 'mavenRepo "http://repo.grails.org/grails/plugins"')
+	}
+
+	buildConfig.withWriter {
+		it.writeLine contents
+		// configure the functional tests to run in order
 		it.writeLine 'grails.testing.patterns = ["Person1Functional", "Person2Functional", "Person3Functional"]'
 	}
 
-	ant.mkdir dir: "${testprojectRoot}/plugins"
-
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: "functional-test ${functionalTestPluginVersion}"
+		ant.arg value: "functional-test $functionalTestPluginVersion"
 	}
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: "ldap-server"
+		ant.arg value: 'ldap-server'
 	}
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: pluginZip.absolutePath
+		ant.arg value: 'spring-security-core'
+	}
+
+//	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
+//		ant.arg value: pluginZip.absolutePath
+//	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
+		ant.arg value: "spring-security-ldap $pluginVersion"
 	}
 }
 
@@ -137,27 +154,29 @@ private void createProjectFiles() {
 	ant.copy file: "$source/users.ldif", todir: "$testprojectRoot/grails-app/ldap-servers/d1/data", overwrite: true
 
 	new File("$testprojectRoot/grails-app/conf/Config.groovy").withWriterAppend {
-		it.writeLine "grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'"
-		it.writeLine "grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'"
-		it.writeLine "grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'"
-		it.writeLine "grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'uniquemember={0}'"
-		it.writeLine "grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'"
-		it.writeLine "grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true"
-		it.writeLine "grails.plugins.springsecurity.ldap.search.base = 'dc=d1,dc=example,dc=com'"
-		it.writeLine "grails.plugins.springsecurity.ldap.search.filter = '(uid={0})'"
-		it.writeLine "grails.plugins.springsecurity.password.algorithm = 'SHA-256'"
-		it.writeLine "ldapServers {"
-		it.writeLine "   d1 {"
-		it.writeLine "      base = 'dc=d1,dc=example,dc=com'"
-		it.writeLine "      port = 10389"
-		it.writeLine "      indexed = ['objectClass', 'uid', 'mail', 'userPassword', 'description']"
-		it.writeLine "   }"
-		it.writeLine "}"
-		it.writeLine "grails.plugins.springsecurity.ldap.useRememberMe = true"
-		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'"
-		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttributeName = 'cn'"
-		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'dc=d1,dc=example,dc=com'"
-		it.writeLine "grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn'"
+		it.writeLine """
+grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
+grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
+grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
+grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'uniquemember={0}'
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
+grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+grails.plugins.springsecurity.ldap.search.base = 'dc=d1,dc=example,dc=com'
+grails.plugins.springsecurity.ldap.search.filter = '(uid={0})'
+grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+ldapServers {
+   d1 {
+      base = 'dc=d1,dc=example,dc=com'
+      port = 10389
+      indexed = ['objectClass', 'uid', 'mail', 'userPassword', 'description']
+   }
+}
+grails.plugins.springsecurity.ldap.useRememberMe = true
+grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
+grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttributeName = 'cn'
+grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'dc=d1,dc=example,dc=com'
+grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn'
+"""
 	}
 }
 
@@ -170,7 +189,7 @@ private void deleteDir(String path) {
 			deleteAll = true
 		}
 		else if (!'y'.equalsIgnoreCase(result)) {
-			ant.echo "\nNot deleting $path"
+			printMessage "\nNot deleting $path"
 			exit 1
 		}
 	}
@@ -179,17 +198,33 @@ private void deleteDir(String path) {
 }
 
 private void error(String message) {
-	ant.echo "\nERROR: $message"
+	errorMessage "\nERROR: $message"
 	exit 1
 }
 
 private void callGrails(String grailsHome, String dir, String env, String action, extraArgs = null) {
-	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: 'true') {
-		ant.env key: 'GRAILS_HOME', value: grailsHome
-		ant.arg value: env
-		ant.arg value: action
-		extraArgs?.call()
+
+	println "running: grails $env $action in dir $dir"
+
+	File output = new File('call_grails_outputproperty')
+	output.deleteOnExit()
+
+	try {
+		ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: 'true',
+		         output: output.absolutePath) {
+			ant.env key: 'GRAILS_HOME', value: grailsHome
+			ant.arg value: env
+			ant.arg value: action
+			extraArgs?.call()
+		}
+	}
+	catch (e) {
+		errorMessage output.text
+		throw e
 	}
 }
+
+printMessage = { String message -> event('StatusUpdate', [message]) }
+errorMessage = { String message -> event('StatusError', [message]) }
 
 setDefaultTarget 'createLdapTestApps'
