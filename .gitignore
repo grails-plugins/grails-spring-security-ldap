@@ -1,0 +1,7 @@
+/plugin.xml
+/grails-spring-security-ldap-*.zip
+/testapps.config.groovy
+/target
+/*.log
+/docs
+/.settings
