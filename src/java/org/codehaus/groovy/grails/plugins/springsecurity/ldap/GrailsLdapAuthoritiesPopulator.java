@@ -57,56 +57,58 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	/**
 	 * This cleans a role based on configuration flags set.
 	 * @param role the role to clean
+	 * @return the cleaned role
 	 */
 	public GrantedAuthority cleanRole(GrantedAuthority role) {
-		if (role instanceof GrantedAuthorityImpl) {
-			GrantedAuthorityImpl newRole = (GrantedAuthorityImpl) role;
-
-			if (_roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
-				// replace dashes
-				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("-", "_"));
-			}
-
-			if (_roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
-				// convert to upper case
-				newRole = new GrantedAuthorityImpl(newRole.getAuthority().toUpperCase());
-			}
-
-			if (_roleStripPrefix != null) {
-				// strip prefix if found
-				String tempPrefix = _rolePrefix + _roleStripPrefix;
-				if (tempPrefix != null && tempPrefix.length() > 0 
-						&& newRole.getAuthority().indexOf(tempPrefix) == 0
-						&& newRole.getAuthority().length() > tempPrefix.length()) {
-					// replace dashes
-					newRole = new GrantedAuthorityImpl(newRole.getAuthority().replace(tempPrefix, _rolePrefix).trim());
-				}
-			}
-
-			if (_roleStripSuffix != null) {
-				// strip suffix if found
-				if (_roleStripSuffix != null && _roleStripSuffix.length() > 0 
-						&& newRole.getAuthority().length() > _roleStripSuffix.length()
-						&& newRole.getAuthority().endsWith(_roleStripSuffix)) {
-					int roleLength = newRole.getAuthority().length();
-					int suffixLength = _roleStripSuffix.length();
-						newRole = new GrantedAuthorityImpl(newRole.getAuthority().substring(0, roleLength - suffixLength).trim());
-				}
-			}
-
-			if (newRole.getAuthority().indexOf(' ') > -1) {
-				// replace spaces
-				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll(" ", "_"));
-			}
-
-			while (newRole.getAuthority().indexOf("__") > -1) {
-				// replace __
-				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("__", "_"));
-			}
-			return newRole;
-		} else {
+		if (!(role instanceof GrantedAuthorityImpl)) {
 			return role;
 		}
+
+		GrantedAuthorityImpl newRole = (GrantedAuthorityImpl) role;
+
+		if (_roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
+			// replace dashes
+			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("-", "_"));
+		}
+
+		if (_roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
+			// convert to upper case
+			newRole = new GrantedAuthorityImpl(newRole.getAuthority().toUpperCase());
+		}
+
+		if (_roleStripPrefix != null) {
+			// strip prefix if found
+			String tempPrefix = _rolePrefix + _roleStripPrefix;
+			if (tempPrefix != null && tempPrefix.length() > 0
+					&& newRole.getAuthority().indexOf(tempPrefix) == 0
+					&& newRole.getAuthority().length() > tempPrefix.length()) {
+				// replace dashes
+				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replace(tempPrefix, _rolePrefix).trim());
+			}
+		}
+
+		if (_roleStripSuffix != null) {
+			// strip suffix if found
+			if (_roleStripSuffix != null && _roleStripSuffix.length() > 0
+					&& newRole.getAuthority().length() > _roleStripSuffix.length()
+					&& newRole.getAuthority().endsWith(_roleStripSuffix)) {
+				int roleLength = newRole.getAuthority().length();
+				int suffixLength = _roleStripSuffix.length();
+				newRole = new GrantedAuthorityImpl(
+						newRole.getAuthority().substring(0, roleLength - suffixLength).trim());
+			}
+		}
+
+		if (newRole.getAuthority().indexOf(' ') > -1) {
+			// replace spaces
+			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll(" ", "_"));
+		}
+
+		while (newRole.getAuthority().indexOf("__") > -1) {
+			// replace __
+			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("__", "_"));
+		}
+		return newRole;
 	}
 
 	@Override
@@ -114,7 +116,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 		Set<GrantedAuthority> roles = super.getGroupMembershipRoles(userDn, username);
 		Set<GrantedAuthority> fixed = new HashSet<GrantedAuthority>();
 		for (GrantedAuthority role : roles) {
-			fixed.add( cleanRole(role) );
+			fixed.add(cleanRole(role));
 		}
 		return fixed;
 	}
@@ -194,6 +196,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * Dependency injection for the name of the rolePrefix to use when creating new roles.
 	 * @param rolePrefix defaults to 'ROLE_'.  Changing this is not recommended.
 	 */
+	@Override
 	public void setRolePrefix(final String rolePrefix) {
 		_rolePrefix = rolePrefix;
 	}
