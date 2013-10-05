@@ -23,9 +23,8 @@ grails.project.dependency.resolution = {
 			         'logback-classic', 'mockito-core', 'shared-ldap', 'slf4j-api', 'spring-beans', 'spring-context',
 			         'spring-core', 'spring-ldap-core', 'spring-security-core', 'spring-test', 'spring-tx'
 		}
-		runtime('org.springframework.ldap:spring-ldap-core:1.3.1.RELEASE') {
-			excludes 'commons-lang', 'commons-logging', 'commons-pool', 'easymock', 'gsbase', 'junit', 'ldapbp', 'log4j',
-			         'spring-beans', 'spring-context', 'spring-core', 'spring-jdbc', 'spring-orm', 'spring-tx'
+		runtime('org.springframework.ldap:spring-ldap-core:1.3.2.RELEASE') {
+			excludes 'commons-lang', 'commons-logging', 'easymock', 'gsbase', 'junit', 'spring-beans', 'spring-core', 'spring-tx'
 		}
 	}
 
