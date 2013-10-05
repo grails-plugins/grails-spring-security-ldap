@@ -115,7 +115,7 @@ class SpringSecurityLdapGrailsPlugin {
 		if (conf.ldap.authenticator.useBind) {
 			ldapAuthenticator(BindAuthenticator, contextSource) {
 				userSearch = ldapUserSearch
-				if (attributesToReturn) {
+				if (attributesToReturn != null) {
 					userAttributes = attributesToReturn
 				}
 				if (dnPatterns) {
@@ -126,7 +126,7 @@ class SpringSecurityLdapGrailsPlugin {
 		else {
 			ldapAuthenticator(PasswordComparisonAuthenticator, contextSource) {
 				userSearch = ldapUserSearch
-				if (attributesToReturn) {
+				if (attributesToReturn != null) {
 					userAttributes = attributesToReturn
 				}
 				if (dnPatterns) {
