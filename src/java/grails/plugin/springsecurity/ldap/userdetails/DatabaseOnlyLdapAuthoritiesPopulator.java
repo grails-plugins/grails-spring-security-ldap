@@ -34,8 +34,8 @@ import org.springframework.util.Assert;
  */
 public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator, InitializingBean {
 
-	private GrantedAuthority defaultRole;
-	private GrailsUserDetailsService userDetailsService;
+	protected GrantedAuthority defaultRole;
+	protected GrailsUserDetailsService userDetailsService;
 
 	/**
 	 * {@inheritDoc}

@@ -29,8 +29,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 public class GrailsLdapRoleMapper implements AttributesMapper {
 
-	private String groupRoleAttributeName;
-	private String rolePrefix = "ROLE_";
+	protected String groupRoleAttributeName;
+	protected String rolePrefix = "ROLE_";
 
 	/**
 	 * {@inheritDoc}

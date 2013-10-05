@@ -22,8 +22,8 @@ import org.springframework.ldap.core.AuthenticationSource;
  */
 public class SimpleAuthenticationSource implements AuthenticationSource {
 
-	private String password;
-	private String userDn;
+	protected String password;
+	protected String userDn;
 
 	/**
 	 * {@inheritDoc}
