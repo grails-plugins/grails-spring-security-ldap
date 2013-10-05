@@ -47,6 +47,11 @@ class SpringSecurityLdapGrailsPlugin {
 	String description = 'LDAP authentication support for the Spring Security plugin.'
 	String documentation = 'http://grails.org/plugin/spring-security-ldap'
 
+	String license = 'APACHE'
+	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYLDAP']
+	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-ldap']
+
 	def doWithSpring = {
 
 		def conf = SpringSecurityUtils.securityConfig
