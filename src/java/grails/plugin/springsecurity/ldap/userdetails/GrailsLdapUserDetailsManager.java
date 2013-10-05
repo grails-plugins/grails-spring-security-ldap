@@ -1,4 +1,4 @@
-package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
+package grails.plugin.springsecurity.ldap.userdetails;
 
 import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService;
 

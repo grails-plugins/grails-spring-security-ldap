@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
+package grails.plugin.springsecurity.ldap.userdetails;
 
 import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService;
 
