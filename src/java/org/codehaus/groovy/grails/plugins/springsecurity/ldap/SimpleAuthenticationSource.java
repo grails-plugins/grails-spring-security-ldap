@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ import org.springframework.ldap.core.AuthenticationSource;
  */
 public class SimpleAuthenticationSource implements AuthenticationSource {
 
-	private String _password;
-	private String _userDn;
+	private String password;
+	private String userDn;
 
 	/**
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AuthenticationSource#getCredentials()
 	 */
 	public String getCredentials() {
-		return _password;
+		return password;
 	}
 
 	/**
@@ -38,22 +38,22 @@ public class SimpleAuthenticationSource implements AuthenticationSource {
 	 * @see org.springframework.ldap.core.AuthenticationSource#getPrincipal()
 	 */
 	public String getPrincipal() {
-		return _userDn;
+		return userDn;
 	}
 
 	/**
 	 * Dependency injection for the password.
-	 * @param password  the password
+	 * @param pwd the password
 	 */
-	public void setPassword(final String password) {
-		_password = password;
+	public void setPassword(final String pwd) {
+		password = pwd;
 	}
 
 	/**
 	 * Dependency injection for the userDn.
-	 * @param userDn  the userDn
+	 * @param dn the userDn
 	 */
-	public void setUserDn(final String userDn) {
-		_userDn = userDn;
+	public void setUserDn(final String dn) {
+		userDn = dn;
 	}
 }

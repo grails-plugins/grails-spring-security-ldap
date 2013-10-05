@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.groovy.grails.plugins.springsecurity.GormUserDetailsService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.DatabaseOnlyLdapAuthoritiesPopulator
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapAuthoritiesPopulator
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapRoleMapper
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapUserDetailsManager
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.SimpleAuthenticationSource
-
-import org.springframework.ldap.core.support.SimpleDirContextAuthenticationStrategy
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource
 import org.springframework.security.ldap.authentication.BindAuthenticator

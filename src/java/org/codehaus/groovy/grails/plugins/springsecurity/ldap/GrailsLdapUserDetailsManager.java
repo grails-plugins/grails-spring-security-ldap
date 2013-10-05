@@ -1,6 +1,7 @@
 package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
 
-import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService;
+import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,11 +21,6 @@ public class GrailsLdapUserDetailsManager extends LdapUserDetailsManager impleme
 		super(contextSource);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService#loadUserByUsername(
-	 * 	java.lang.String, boolean)
-	 */
 	public UserDetails loadUserByUsername(final String username, final boolean loadRoles)
 			throws UsernameNotFoundException, DataAccessException {
 		return super.loadUserByUsername(username);

@@ -1,4 +1,4 @@
-/* Copyright 2011-2012 SpringSource.
+/* Copyright 2011-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
 
+import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService;
+
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
@@ -34,7 +35,7 @@ import org.springframework.util.Assert;
 public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator, InitializingBean {
 
 	private GrantedAuthority defaultRole;
-	private GrailsUserDetailsService _userDetailsService;
+	private GrailsUserDetailsService userDetailsService;
 
 	/**
 	 * {@inheritDoc}
@@ -45,7 +46,7 @@ public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopu
 
 		UserDetails dbDetails = null;
 		try {
-			dbDetails = _userDetailsService.loadUserByUsername(username, true);
+			dbDetails = userDetailsService.loadUserByUsername(username, true);
 		}
 		catch (UsernameNotFoundException ignored) {
 			// just looking for roles, so ignore the UsernameNotFoundException
@@ -69,7 +70,7 @@ public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopu
 	 * @param service the service
 	 */
 	public void setUserDetailsService(final GrailsUserDetailsService service) {
-		_userDetailsService = service;
+		userDetailsService = service;
 	}
 
 	/**
@@ -79,7 +80,7 @@ public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopu
 	 */
 	public void setDefaultRole(String defaultRoleName) {
 		Assert.notNull(defaultRoleName, "The defaultRole property cannot be set to null");
-		defaultRole = new GrantedAuthorityImpl(defaultRoleName);
+		defaultRole = new SimpleGrantedAuthority(defaultRoleName);
 	}
 
 	/**
@@ -87,6 +88,6 @@ public class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopu
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() {
-		Assert.notNull(_userDetailsService, "userDetailsService must be specified");
+		Assert.notNull(userDetailsService, "userDetailsService must be specified");
 	}
 }

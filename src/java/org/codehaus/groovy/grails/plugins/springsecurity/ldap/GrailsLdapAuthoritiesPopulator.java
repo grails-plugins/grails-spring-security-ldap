@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
 
+import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
@@ -33,14 +34,14 @@ import org.springframework.util.Assert;
  */
 public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator implements InitializingBean {
 
-	private GrailsUserDetailsService _userDetailsService;
-	private Boolean _retrieveDatabaseRoles;
+	private GrailsUserDetailsService userDetailsService;
+	private Boolean retrieveDatabaseRoles;
 
-	private String _rolePrefix = "ROLE_";
-	private String _roleStripPrefix;
-	private String _roleStripSuffix;
-	private boolean _roleConvertDashes = false;
-	private boolean _roleToUpperCase = false;
+	private String rolePrefix = "ROLE_";
+	private String roleStripPrefix;
+	private String roleStripSuffix;
+	private boolean roleConvertDashes = false;
+	private boolean roleToUpperCase = false;
 
 	/**
 	 * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
@@ -60,53 +61,53 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * @return the cleaned role
 	 */
 	public GrantedAuthority cleanRole(GrantedAuthority role) {
-		if (!(role instanceof GrantedAuthorityImpl)) {
+		if (!(role instanceof SimpleGrantedAuthority)) {
 			return role;
 		}
 
-		GrantedAuthorityImpl newRole = (GrantedAuthorityImpl) role;
+		SimpleGrantedAuthority newRole = (SimpleGrantedAuthority) role;
 
-		if (_roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
+		if (roleConvertDashes && newRole.getAuthority().indexOf('-') > -1) {
 			// replace dashes
-			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("-", "_"));
+			newRole = new SimpleGrantedAuthority(newRole.getAuthority().replaceAll("-", "_"));
 		}
 
-		if (_roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
+		if (roleToUpperCase && !newRole.getAuthority().toUpperCase().equals(newRole.getAuthority())) {
 			// convert to upper case
-			newRole = new GrantedAuthorityImpl(newRole.getAuthority().toUpperCase());
+			newRole = new SimpleGrantedAuthority(newRole.getAuthority().toUpperCase());
 		}
 
-		if (_roleStripPrefix != null) {
+		if (roleStripPrefix != null) {
 			// strip prefix if found
-			String tempPrefix = _rolePrefix + _roleStripPrefix;
-			if (tempPrefix != null && tempPrefix.length() > 0
+			String tempPrefix = rolePrefix + roleStripPrefix;
+			if (tempPrefix.length() > 0
 					&& newRole.getAuthority().indexOf(tempPrefix) == 0
 					&& newRole.getAuthority().length() > tempPrefix.length()) {
 				// replace dashes
-				newRole = new GrantedAuthorityImpl(newRole.getAuthority().replace(tempPrefix, _rolePrefix).trim());
+				newRole = new SimpleGrantedAuthority(newRole.getAuthority().replace(tempPrefix, rolePrefix).trim());
 			}
 		}
 
-		if (_roleStripSuffix != null) {
+		if (roleStripSuffix != null) {
 			// strip suffix if found
-			if (_roleStripSuffix != null && _roleStripSuffix.length() > 0
-					&& newRole.getAuthority().length() > _roleStripSuffix.length()
-					&& newRole.getAuthority().endsWith(_roleStripSuffix)) {
+			if (roleStripSuffix != null && roleStripSuffix.length() > 0
+					&& newRole.getAuthority().length() > roleStripSuffix.length()
+					&& newRole.getAuthority().endsWith(roleStripSuffix)) {
 				int roleLength = newRole.getAuthority().length();
-				int suffixLength = _roleStripSuffix.length();
-				newRole = new GrantedAuthorityImpl(
+				int suffixLength = roleStripSuffix.length();
+				newRole = new SimpleGrantedAuthority(
 						newRole.getAuthority().substring(0, roleLength - suffixLength).trim());
 			}
 		}
 
 		if (newRole.getAuthority().indexOf(' ') > -1) {
 			// replace spaces
-			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll(" ", "_"));
+			newRole = new SimpleGrantedAuthority(newRole.getAuthority().replaceAll(" ", "_"));
 		}
 
 		while (newRole.getAuthority().indexOf("__") > -1) {
 			// replace __
-			newRole = new GrantedAuthorityImpl(newRole.getAuthority().replaceAll("__", "_"));
+			newRole = new SimpleGrantedAuthority(newRole.getAuthority().replaceAll("__", "_"));
 		}
 		return newRole;
 	}
@@ -123,10 +124,10 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 
 	@Override
 	protected Set<GrantedAuthority> getAdditionalRoles(final DirContextOperations user, final String username) {
-		if (_retrieveDatabaseRoles) {
+		if (retrieveDatabaseRoles) {
 			UserDetails dbDetails = null;
 			try {
-				dbDetails = _userDetailsService.loadUserByUsername(username, true);
+				dbDetails = userDetailsService.loadUserByUsername(username, true);
 			}
 			catch (UsernameNotFoundException ignored) {
 				// just looking for roles, so ignore the UsernameNotFoundException
@@ -145,7 +146,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * @param service  the service
 	 */
 	public void setUserDetailsService(final GrailsUserDetailsService service) {
-		_userDetailsService = service;
+		userDetailsService = service;
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * @param retrieve  if <code>true</code> then load roles from database also
 	 */
 	public void setRetrieveDatabaseRoles(final boolean retrieve) {
-		_retrieveDatabaseRoles = retrieve;
+		retrieveDatabaseRoles = retrieve;
 	}
 
 	/**
@@ -161,15 +162,15 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	private void updateRoleStripPrefix() {
 		// convert dashes
-		if (_roleConvertDashes) {
-			if (_roleStripPrefix != null && _roleStripPrefix.indexOf('-') > -1) {
-				_roleStripPrefix = _roleStripPrefix.replaceAll("-", "_");
+		if (roleConvertDashes) {
+			if (roleStripPrefix != null && roleStripPrefix.indexOf('-') > -1) {
+				roleStripPrefix = roleStripPrefix.replaceAll("-", "_");
 			}
 		}
 		// To upper case
-		if (_roleToUpperCase) {
-			if (_roleStripPrefix != null && !_roleStripPrefix.toUpperCase().equals(_roleStripPrefix)) {
-				_roleStripPrefix = _roleStripPrefix.toUpperCase();
+		if (roleToUpperCase) {
+			if (roleStripPrefix != null && !roleStripPrefix.toUpperCase().equals(roleStripPrefix)) {
+				roleStripPrefix = roleStripPrefix.toUpperCase();
 			}
 		}
 	}
@@ -179,36 +180,36 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 */
 	private void updateRoleStripSuffix() {
 		// convert dashes
-		if (_roleConvertDashes) {
-			if (_roleStripSuffix != null && _roleStripSuffix.indexOf('-') > -1) {
-				_roleStripSuffix = _roleStripSuffix.replaceAll("-", "_");
+		if (roleConvertDashes) {
+			if (roleStripSuffix != null && roleStripSuffix.indexOf('-') > -1) {
+				roleStripSuffix = roleStripSuffix.replaceAll("-", "_");
 			}
 		}
 		// To upper case
-		if (_roleToUpperCase) {
-			if (_roleStripSuffix != null && !_roleStripSuffix.toUpperCase().equals(_roleStripSuffix)) {
-				_roleStripSuffix = _roleStripSuffix.toUpperCase();
+		if (roleToUpperCase) {
+			if (roleStripSuffix != null && !roleStripSuffix.toUpperCase().equals(roleStripSuffix)) {
+				roleStripSuffix = roleStripSuffix.toUpperCase();
 			}
 		}
 	}
 
 	/**
 	 * Dependency injection for the name of the rolePrefix to use when creating new roles.
-	 * @param rolePrefix defaults to 'ROLE_'.  Changing this is not recommended.
+	 * @param prefix defaults to 'ROLE_'.  Changing this is not recommended.
 	 */
 	@Override
-	public void setRolePrefix(final String rolePrefix) {
-		_rolePrefix = rolePrefix;
+	public void setRolePrefix(final String prefix) {
+		rolePrefix = prefix;
 	}
 
 	/**
 	 * Dependency injection for whether or not to remove a prefix string from a LDAP
 	 * group name if it matches the beginning of the group name, but not the full
 	 * name of the group.
-	 * @param roleStripPrefix if not null, this is stripped from the group name before it is made into a role
+	 * @param prefix if not null, this is stripped from the group name before it is made into a role
 	 */
-	public void setRoleStripPrefix(final String roleStripPrefix) {
-		_roleStripPrefix = roleStripPrefix;
+	public void setRoleStripPrefix(final String prefix) {
+		roleStripPrefix = prefix;
 		updateRoleStripPrefix();
 	}
 
@@ -216,20 +217,20 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * Dependency injection for whether or not to remove a suffix string from a LDAP
 	 * group name if it matches the end of the group name, but not the full
 	 * name of the group.
-	 * @param roleStripSuffix if not null, this is stripped from the group name before it is made into a role
+	 * @param suffix if not null, this is stripped from the group name before it is made into a role
 	 */
-	public void setRoleStripSuffix(final String roleStripSuffix) {
-		_roleStripSuffix = roleStripSuffix;
+	public void setRoleStripSuffix(final String suffix) {
+		roleStripSuffix = suffix;
 		updateRoleStripSuffix();
 	}
 
 	/**
 	 * Dependency injection for whether or not to convert all dashes to underscores if found in a
 	 * group name before it is made into a role.
-	 * @param roleConvertDashes if <code>true</code>, all dashes are converted to underscores
+	 * @param convertDashes if <code>true</code>, all dashes are converted to underscores
 	 */
-	public void setRoleConvertDashes(final boolean roleConvertDashes) {
-		_roleConvertDashes = roleConvertDashes;
+	public void setRoleConvertDashes(final boolean convertDashes) {
+		roleConvertDashes = convertDashes;
 		updateRoleStripPrefix();
 		updateRoleStripSuffix();
 	}
@@ -237,10 +238,10 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	/**
 	 * Dependency injection for whether or not to convert group names to uppercase before they
 	 * are made into roles.
-	 * @param roleToUpperCase if <code>true</code>, roles are converted to uppercase
+	 * @param toUpperCase if <code>true</code>, roles are converted to uppercase
 	 */
-	public void setRoleToUpperCase(final boolean roleToUpperCase) {
-		_roleToUpperCase = roleToUpperCase;
+	public void setRoleToUpperCase(final boolean toUpperCase) {
+		roleToUpperCase = toUpperCase;
 		updateRoleStripPrefix();
 		updateRoleStripSuffix();
 	}
@@ -250,7 +251,7 @@ public class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopula
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() {
-		Assert.notNull(_userDetailsService, "userDetailsService must be specified");
-		Assert.notNull(_retrieveDatabaseRoles, "retrieveDatabaseRoles must be specified");
+		Assert.notNull(userDetailsService, "userDetailsService must be specified");
+		Assert.notNull(retrieveDatabaseRoles, "retrieveDatabaseRoles must be specified");
 	}
 }
