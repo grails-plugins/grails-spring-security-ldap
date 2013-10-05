@@ -19,16 +19,16 @@
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 
-includeTargets << grailsScript('_GrailsBootstrap')
+includeTargets << new File(springSecurityCorePluginDir, "scripts/_S2Common.groovy")
 
 functionalTestPluginVersion = '1.2.7'
+projectfiles = new File(basedir, 'webtest/projectFiles')
 appName = null
 grailsHome = null
 dotGrails = null
 grailsVersion = null
 projectDir = null
 pluginVersion = null
-pluginZip = null
 testprojectRoot = null
 deleteAll = false
 
@@ -56,7 +56,7 @@ private void init(String name, config) {
 		error "pluginVersion wasn't specified for config '$name'"
 	}
 
-	pluginZip = new File(basedir, "grails-spring-security-ldap-${pluginVersion}.zip")
+	def pluginZip = new File(basedir, "grails-spring-security-ldap-${pluginVersion}.zip")
 	if (!pluginZip.exists()) {
 		error "plugin $pluginZip.absolutePath not found"
 	}
@@ -80,9 +80,7 @@ private void createApp() {
 	deleteDir testprojectRoot
 	deleteDir "$dotGrails/projects/$appName"
 
-	callGrails(grailsHome, projectDir, 'dev', 'create-app') {
-		ant.arg value: appName
-	}
+	callGrails grailsHome, projectDir, 'dev', 'create-app', [appName]
 }
 
 private void installPlugins() {
@@ -94,45 +92,33 @@ private void installPlugins() {
 	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
 	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
-	if (grailsVersion.startsWith('1')) {
-		contents = contents.replace('grailsCentral()', 'mavenRepo "http://repo.grails.org/grails/plugins"')
-	}
+	contents = contents.replace('//mavenLocal()', 'mavenLocal()')
+	contents = contents.replace('repositories {', '''repositories {
+mavenRepo 'http://repo.spring.io/milestone' // TODO remove
+''')
 
-	buildConfig.withWriter {
-		it.writeLine contents
-		// configure the functional tests to run in order
-		it.writeLine 'grails.testing.patterns = ["Person1Functional", "Person2Functional", "Person3Functional"]'
-	}
+	contents = contents.replace('grails.project.fork', 'grails.project.forkDISABLED')
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: "functional-test $functionalTestPluginVersion"
-	}
+	contents = contents.replace('plugins {', """plugins {
+test ":functional-test:$functionalTestPluginVersion"
+compile ":ldap-server:0.1.8"
+compile ":spring-security-ldap:$pluginVersion"
+""")
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: 'ldap-server'
-	}
+	// configure the functional tests to run in order
+	contents += '''
+'grails.testing.patterns = ["Person1Functional", "Person2Functional", "Person3Functional"]'
+'''
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: 'spring-security-core'
-	}
+	buildConfig.withWriter { it.writeLine contents }
 
-//	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-//		ant.arg value: pluginZip.absolutePath
-//	}
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: "spring-security-ldap $pluginVersion"
-	}
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile', null, true // can fail when installing the functional-test plugin
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile'
 }
 
 private void runQuickstart() {
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart') {
-		ant.arg value: 'com.testldap'
-		ant.arg value: 'User'
-		ant.arg value: 'Role'
-	}
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token') {
-		ant.arg value: 'com.testldap.PersistentLogin'
-	}
+	callGrails grailsHome, testprojectRoot, 'dev', 's2-quickstart', ['com.testldap', 'User', 'Role']
+	callGrails grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token', ['com.testldap.PersistentLogin']
 }
 
 private void createProjectFiles() {
@@ -155,15 +141,15 @@ private void createProjectFiles() {
 
 	new File("$testprojectRoot/grails-app/conf/Config.groovy").withWriterAppend {
 		it.writeLine """
-grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
-grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
-grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
-grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'uniquemember={0}'
-grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
-grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-grails.plugins.springsecurity.ldap.search.base = 'dc=d1,dc=example,dc=com'
-grails.plugins.springsecurity.ldap.search.filter = '(uid={0})'
-grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+grails.plugin.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
+grails.plugin.springsecurity.ldap.context.managerPassword = 'secret'
+grails.plugin.springsecurity.ldap.context.server = 'ldap://localhost:10389'
+grails.plugin.springsecurity.ldap.authorities.groupSearchFilter = 'uniquemember={0}'
+grails.plugin.springsecurity.ldap.authorities.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
+grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+grails.plugin.springsecurity.ldap.search.base = 'dc=d1,dc=example,dc=com'
+grails.plugin.springsecurity.ldap.search.filter = '(uid={0})'
+grails.plugin.springsecurity.password.algorithm = 'SHA-256'
 ldapServers {
    d1 {
       base = 'dc=d1,dc=example,dc=com'
@@ -171,11 +157,14 @@ ldapServers {
       indexed = ['objectClass', 'uid', 'mail', 'userPassword', 'description']
    }
 }
-grails.plugins.springsecurity.ldap.useRememberMe = true
-grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
-grails.plugins.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttributeName = 'cn'
-grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'dc=d1,dc=example,dc=com'
-grails.plugins.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn'
+grails.plugin.springsecurity.ldap.useRememberMe = true
+grails.plugin.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'ou=groups,dc=d1,dc=example,dc=com'
+grails.plugin.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttributeName = 'cn'
+grails.plugin.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'dc=d1,dc=example,dc=com'
+grails.plugin.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'cn'
+
+grails.plugin.springsecurity.fii.rejectPublicInvocations = true
+grails.plugin.springsecurity.rejectIfNoRule = false
 """
 	}
 }
@@ -202,29 +191,28 @@ private void error(String message) {
 	exit 1
 }
 
-private void callGrails(String grailsHome, String dir, String env, String action, extraArgs = null) {
+private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null, boolean ignoreFailure = false) {
 
-	println "running: grails $env $action in dir $dir"
+	String resultproperty = 'exitCode' + System.currentTimeMillis()
+	String outputproperty = 'execOutput' + System.currentTimeMillis()
 
-	File output = new File('call_grails_outputproperty')
-	output.deleteOnExit()
+	println "Running 'grails $env $action ${extraArgs?.join(' ') ?: ''}'"
 
-	try {
-		ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: 'true',
-		         output: output.absolutePath) {
-			ant.env key: 'GRAILS_HOME', value: grailsHome
-			ant.arg value: env
-			ant.arg value: action
-			extraArgs?.call()
-		}
+	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: false,
+				resultproperty: resultproperty, outputproperty: outputproperty) {
+		ant.env key: 'GRAILS_HOME', value: grailsHome
+		ant.arg value: env
+		ant.arg value: action
+		extraArgs.each { ant.arg value: it }
+		ant.arg value: '--stacktrace'
 	}
-	catch (e) {
-		errorMessage output.text
-		throw e
+
+	println ant.project.getProperty(outputproperty)
+
+	int exitCode = ant.project.getProperty(resultproperty) as Integer
+	if (exitCode && !ignoreFailure) {
+		exit exitCode
 	}
 }
-
-printMessage = { String message -> event('StatusUpdate', [message]) }
-errorMessage = { String message -> event('StatusError', [message]) }
 
 setDefaultTarget 'createLdapTestApps'
