@@ -1,7 +1,7 @@
 {note}
-Any property overrides must be specified in @grails-app/conf/Config.groovy@ using the @grails.plugins.springsecurity@ suffix, for example
+Any property overrides must be specified in @grails-app/conf/Config.groovy@ using the @grails.plugin.springsecurity@ suffix, for example
 {code}
-grails.plugins.springsecurity.ldap.search.searchSubtree = true
+grails.plugin.springsecurity.ldap.search.searchSubtree = true
 {code}
 {note}
 
