@@ -88,13 +88,12 @@ class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
    UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection authorities) {
 
-      String fullname =  ctx.originalAttrs.attrs['name'].values[0]
+      String fullname = ctx.originalAttrs.attrs['name'].values[0]
       String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
-      String username = ctx.originalAttrs.attrs['samaccountname'].values[0].toString().toLowerCase()
       def title = ctx.originalAttrs.attrs['title']
 
       new MyUserDetails(username, null, true, true, true, true,
-                        authorities, fullname, email, title == null ? '' : title.values[0]) {
+                        authorities, fullname, email, title == null ? '' : title.values[0])
    }
 
    void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
