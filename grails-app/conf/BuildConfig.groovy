@@ -1,6 +1,5 @@
 grails.project.work.dir = 'target'
 grails.project.docs.output.dir = 'docs/manual' // for the gh-pages branch
-grails.project.source.level = 1.6
 
 grails.project.dependency.resolution = {
 
@@ -11,30 +10,32 @@ grails.project.dependency.resolution = {
 		grailsCentral()
 		mavenLocal()
 		mavenCentral()
+
+		mavenRepo 'http://repo.spring.io/milestone' // TODO remove
 	}
 
 	dependencies {
-		compile('org.springframework.security:spring-security-ldap:3.0.7.RELEASE') {
-			excludes 'spring-security-core', 'spring-ldap-core', 'ldapsdk', 'apacheds-core',
-			         'apacheds-server-jndi', 'slf4j-log4j12', 'log4j', 'junit',
-			         'mockito-core', 'jmock-junit4'
+		String springSecurityVersion = '3.2.0.RC1'
+
+		compile "org.springframework.security:spring-security-ldap:$springSecurityVersion", {
+			excludes 'apacheds-core', 'apacheds-core-entry', 'apacheds-protocol-ldap', 'apacheds-protocol-shared',
+			         'apacheds-server-jndi', 'commons-logging', 'fest-assert', 'jcl-over-slf4j', 'junit', 'ldapsdk',
+			         'logback-classic', 'mockito-core', 'shared-ldap', 'slf4j-api', 'spring-beans', 'spring-context',
+			         'spring-core', 'spring-ldap-core', 'spring-security-core', 'spring-test', 'spring-tx'
 		}
-		runtime('org.springframework.ldap:spring-ldap-core:1.3.1.RELEASE') {
-			excludes 'commons-logging', 'commons-lang', 'commons-pool', 'ldapbp',
-			         'spring-core', 'spring-beans', 'spring-tx', 'spring-context',
-			         'spring-jdbc', 'spring-orm', 'junit', 'easymock', 'gsbase',
-			         'commons-logging', 'spring-core', 'spring-beans', 'junit', 'log4j'
+		runtime('org.springframework.ldap:spring-ldap-core:1.3.2.RELEASE') {
+			excludes 'commons-lang', 'commons-logging', 'easymock', 'gsbase', 'junit', 'spring-beans', 'spring-core', 'spring-tx'
 		}
 	}
 
 	plugins {
-		compile ':spring-security-core:1.2.7.3'
+		compile ':spring-security-core:2.0-RC2'
 
 		compile(":hibernate:$grailsVersion") {
 			export = false
 		}
 
-		build(':release:2.0.2', ':rest-client-builder:1.0.2') {
+		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
 			export = false
 		}
 	}

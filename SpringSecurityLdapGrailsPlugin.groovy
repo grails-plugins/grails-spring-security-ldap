@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.groovy.grails.plugins.springsecurity.GormUserDetailsService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.ldap.DatabaseOnlyLdapAuthoritiesPopulator
-import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapAuthoritiesPopulator
-import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapRoleMapper
-import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapUserDetailsManager
-import org.codehaus.groovy.grails.plugins.springsecurity.ldap.SimpleAuthenticationSource
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.ldap.core.GrailsLdapRoleMapper
+import grails.plugin.springsecurity.ldap.core.GrailsSimpleDirContextAuthenticationStrategy
+import grails.plugin.springsecurity.ldap.core.SimpleAuthenticationSource
+import grails.plugin.springsecurity.ldap.userdetails.DatabaseOnlyLdapAuthoritiesPopulator
+import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapAuthoritiesPopulator
+import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapUserDetailsManager
+import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 
-import org.springframework.ldap.core.support.SimpleDirContextAuthenticationStrategy
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource
 import org.springframework.security.ldap.authentication.BindAuthenticator
@@ -34,8 +35,8 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.6'
-	String grailsVersion = '1.3.3 > *'
+	String version = '2.0-RC2'
+	String grailsVersion = '2.0.0 > *'
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**'
@@ -43,10 +44,15 @@ class SpringSecurityLdapGrailsPlugin {
 	List loadAfter = ['springSecurityCore']
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
 	String documentation = 'http://grails.org/plugin/spring-security-ldap'
+
+	String license = 'APACHE'
+	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYLDAP']
+	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-ldap']
 
 	def doWithSpring = {
 
@@ -54,6 +60,8 @@ class SpringSecurityLdapGrailsPlugin {
 		if (!conf || !conf.active) {
 			return
 		}
+
+		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
 
 		SpringSecurityUtils.loadSecondaryConfig 'DefaultLdapSecurityConfig'
 		// have to get again after overlaying DefaultLdapSecurityConfig
@@ -63,28 +71,35 @@ class SpringSecurityLdapGrailsPlugin {
 			return
 		}
 
-		println '\nConfiguring Spring Security LDAP ...'
+		if (printStatusMessages) {
+			println '\nConfiguring Spring Security LDAP ...'
+		}
 
 		SpringSecurityUtils.registerProvider 'ldapAuthProvider'
 
 		Class<?> contextFactoryClass = classForName(conf.ldap.context.contextFactoryClassName) // com.sun.jndi.ldap.LdapCtxFactory
 		Class<?> dirObjectFactoryClass = classForName(conf.ldap.context.dirObjectFactoryClassName) // org.springframework.ldap.core.support.DefaultDirObjectFactory
 
-		contextSource(DefaultSpringSecurityContextSource, conf.ldap.context.server) {
-			userDn = conf.ldap.context.managerDn
-			password = conf.ldap.context.managerPassword
+		authenticationStrategy(GrailsSimpleDirContextAuthenticationStrategy) {
+			userDn = conf.ldap.context.managerDn // 'cn=admin,dc=example,dc=com'
+		}
+
+		contextSource(DefaultSpringSecurityContextSource, conf.ldap.context.server) { // 'ldap://localhost:389'
+			authenticationSource = ref('ldapAuthenticationSource')
+			authenticationStrategy = ref('authenticationStrategy')
+			userDn = conf.ldap.context.managerDn // 'cn=admin,dc=example,dc=com'
+			password = conf.ldap.context.managerPassword // 'secret'
 			contextFactory = contextFactoryClass
 			dirObjectFactory = dirObjectFactoryClass
 			baseEnvironmentProperties = conf.ldap.context.baseEnvironmentProperties // none
 			cacheEnvironmentProperties = conf.ldap.context.cacheEnvironmentProperties // true
 			anonymousReadOnly = conf.ldap.context.anonymousReadOnly // false
 			referral = conf.ldap.context.referral // null
-			authenticationSource = ref('ldapAuthenticationSource')
 		}
 
 		ldapAuthenticationSource(SimpleAuthenticationSource) {
-			userDn = conf.ldap.context.managerDn
-			password = conf.ldap.context.managerPassword
+			userDn = conf.ldap.context.managerDn // 'cn=admin,dc=example,dc=com'
+			password = conf.ldap.context.managerPassword // 'secret'
 		}
 
 		String[] searchAttributesToReturn = toStringArray(conf.ldap.search.attributesToReturn) // null - all
@@ -100,7 +115,7 @@ class SpringSecurityLdapGrailsPlugin {
 		if (conf.ldap.authenticator.useBind) {
 			ldapAuthenticator(BindAuthenticator, contextSource) {
 				userSearch = ldapUserSearch
-				if (attributesToReturn) {
+				if (attributesToReturn != null) {
 					userAttributes = attributesToReturn
 				}
 				if (dnPatterns) {
@@ -111,7 +126,7 @@ class SpringSecurityLdapGrailsPlugin {
 		else {
 			ldapAuthenticator(PasswordComparisonAuthenticator, contextSource) {
 				userSearch = ldapUserSearch
-				if (attributesToReturn) {
+				if (attributesToReturn != null) {
 					userAttributes = attributesToReturn
 				}
 				if (dnPatterns) {
@@ -140,14 +155,14 @@ class SpringSecurityLdapGrailsPlugin {
 
 		if (conf.ldap.authorities.retrieveGroupRoles) {
 			ldapAuthoritiesPopulator(GrailsLdapAuthoritiesPopulator, contextSource, conf.ldap.authorities.groupSearchBase) {
-				groupRoleAttribute = conf.ldap.authorities.groupRoleAttribute
-				groupSearchFilter = conf.ldap.authorities.groupSearchFilter
-				searchSubtree = conf.ldap.authorities.searchSubtree
+				groupRoleAttribute = conf.ldap.authorities.groupRoleAttribute // 'cn'
+				groupSearchFilter = conf.ldap.authorities.groupSearchFilter // 'uniquemember={0}'
+				searchSubtree = conf.ldap.authorities.searchSubtree // true
 				if (conf.ldap.authorities.defaultRole) {
 					defaultRole = conf.ldap.authorities.defaultRole
 				}
 				ignorePartialResultException = conf.ldap.authorities.ignorePartialResultException // false
-				if (conf.ldap.useRememberMe && conf.ldap.authorities.retrieveDatabaseRoles) {
+				if (conf.ldap.useRememberMe && conf.ldap.authorities.retrieveDatabaseRoles) { // false
 					userDetailsService = ref('ldapRememberMeUserDetailsService')
 				}
 				else {
@@ -157,10 +172,10 @@ class SpringSecurityLdapGrailsPlugin {
 				// Use to cleanup LDAP (Active Directory) Group names
 				// Spaces are automatically converted to underscores
 				rolePrefix = conf.ldap.authorities.prefix // 'ROLE_'
-				roleStripPrefix = conf.ldap.authorities.clean.prefix
-				roleStripSuffix = conf.ldap.authorities.clean.suffix
-				roleConvertDashes = conf.ldap.authorities.clean.dashes
-				roleToUpperCase = conf.ldap.authorities.clean.uppercase
+				roleStripPrefix = conf.ldap.authorities.clean.prefix // null
+				roleStripSuffix = conf.ldap.authorities.clean.suffix // null
+				roleConvertDashes = conf.ldap.authorities.clean.dashes // false
+				roleToUpperCase = conf.ldap.authorities.clean.uppercase // false
 			}
 		}
 		else if (conf.ldap.authorities.retrieveDatabaseRoles) {
@@ -179,10 +194,14 @@ class SpringSecurityLdapGrailsPlugin {
 		else {
 			ldapAuthoritiesPopulator(NullLdapAuthoritiesPopulator)
 		}
+
+		ldapAuthoritiesMapper(NullAuthoritiesMapper)
+
 		ldapAuthProvider(LdapAuthenticationProvider, ldapAuthenticator, ldapAuthoritiesPopulator) {
-			userDetailsContextMapper = ldapUserDetailsMapper
+			userDetailsContextMapper = ref('ldapUserDetailsMapper')
 			hideUserNotFoundExceptions = conf.ldap.auth.hideUserNotFoundExceptions // true
 			useAuthenticationRequestCredentials = conf.ldap.auth.useAuthPassword // true
+			authoritiesMapper = ref('ldapAuthoritiesMapper')
 		}
 
 		if (conf.ldap.useRememberMe) {
@@ -222,7 +241,9 @@ class SpringSecurityLdapGrailsPlugin {
 				conf.ldap.rememberMe.usernameMapper.usernameAttribute)
 		}
 
-		println '... finished configuring Spring Security LDAP\n'
+		if (printStatusMessages) {
+			println '... finished configuring Spring Security LDAP\n'
+		}
 	}
 
 	private String[] toStringArray(value) {

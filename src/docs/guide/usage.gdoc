@@ -5,18 +5,17 @@ Configuring your LDAP server is beyond the scope of this document. There are man
 There isn't much that you need to do in your application to use LDAP. Just install this plugin, and configure any required parameters and whatever optional parameters you want in Config.groovy. These are described in detail in [Chapter 3|guide:3. Configuration] but typically you only need to set these properties
 
 {code}
-grails.plugins.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
-grails.plugins.springsecurity.ldap.context.managerPassword = 'secret'
-grails.plugins.springsecurity.ldap.context.server = 'ldap://localhost:10389'
-grails.plugins.springsecurity.ldap.authorities.groupSearchBase =
-     'ou=groups,dc=yourcompany,dc=com'
-grails.plugins.springsecurity.ldap.search.base = 'dc=yourcompany,dc=com'
+grails.plugin.springsecurity.ldap.context. managerDn = 'uid=admin,ou=system'
+grails.plugin.springsecurity.ldap.context. managerPassword = 'secret'
+grails.plugin.springsecurity.ldap.context. server = 'ldap://localhost:10389'
+grails.plugin.springsecurity.ldap.authorities. groupSearchBase = 'ou=groups,dc=yourcompany,dc=com'
+grails.plugin.springsecurity.ldap.search. base = 'dc=yourcompany,dc=com'
 {code}
 
 Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this
 
 {code}
-grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 {code}
 
 to do an extra database lookup after the LDAP lookup.
@@ -24,7 +23,7 @@ to do an extra database lookup after the LDAP lookup.
 Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.
 
 {code}
-grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+grails.plugin.springsecurity.password.algorithm = 'SHA-256'
 {code}
 
 h4.  Sample Config.groovy settings for Active Directory
@@ -37,30 +36,30 @@ Replace the placeholders inside [] brackets with appropriate values and remove t
 
 {code}
 // LDAP config
-grails.plugins.springsecurity.ldap.context.managerDn = '[distinguishedName]'
-grails.plugins.springsecurity.ldap.context.managerPassword = '[password]'
-grails.plugins.springsecurity.ldap.context.server = 'ldap://[ip]:[port]/'
-grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
-grails.plugins.springsecurity.ldap.search.base = '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
-grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
-grails.plugins.springsecurity.ldap.search.searchSubtree = true
-grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
-grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
-grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider'] // specify this when you want to skip attempting to load from db and only use LDAP
+grails.plugin.springsecurity.ldap. context.managerDn = '[distinguishedName]'
+grails.plugin.springsecurity.ldap. context.managerPassword = '[password]'
+grails.plugin.springsecurity.ldap. context.server = 'ldap://[ip]:[port]/'
+grails.plugin.springsecurity.ldap. authorities.ignorePartialResultException = true // typically needed for Active Directory
+grails.plugin.springsecurity.ldap. search.base = '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
+grails.plugin.springsecurity.ldap. search.filter="sAMAccountName={0}" // for Active Directory you need this
+grails.plugin.springsecurity.ldap. search.searchSubtree = true
+grails.plugin.springsecurity.ldap. auth.hideUserNotFoundExceptions = false
+grails.plugin.springsecurity.ldap. search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
+grails.plugin.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider'] // specify this when you want to skip attempting to load from db and only use LDAP
 
 // role-specific LDAP config
-grails.plugins.springsecurity.ldap.useRememberMe = false
-grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
-grails.plugins.springsecurity.ldap.authorities.groupSearchBase ='[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
+grails.plugin.springsecurity.ldap.useRememberMe = false
+grails.plugin.springsecurity.ldap.authorities.retrieveGroupRoles = true
+grails.plugin.springsecurity.ldap.authorities.groupSearchBase ='[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
 // If you don't want to support group membership recursion (groups in groups), then use the following setting
-// grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' // Active Directory specific
+// grails.plugin.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}' // Active Directory specific
 // If you wish to support groups with group as members (recursive groups), use the following
-grails.plugins.springsecurity.ldap.authorities.groupSearchFilter = '(member:1.2.840.113556.1.4.1941:={0})' // Active Directory specific
+grails.plugin.springsecurity.ldap.authorities.groupSearchFilter = '(member:1.2.840.113556.1.4.1941:={0})' // Active Directory specific
 {code}
 
 h4. Custom UserDetailsContextMapper
 
-There are three options for mapping LDAP attributes to @UserDetails@ data (as specified by the @grails.plugins.springsecurity.ldap.mapper.userDetailsClass@ config attribute) and hopefully one of those will be sufficient for your needs. If not, it's easy to implement [UserDetailsContextMapper|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html] yourself.
+There are three options for mapping LDAP attributes to @UserDetails@ data (as specified by the @grails.plugin.springsecurity.ldap.mapper.userDetailsClass@ config attribute) and hopefully one of those will be sufficient for your needs. If not, it's easy to implement [UserDetailsContextMapper|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html] yourself.
 
 Create a class in @src/groovy@ or @src/java@ that implements [UserDetailsContextMapper|http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html] and register it in @grails-app/conf/spring/resources.groovy@:
 
@@ -86,15 +85,16 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 
 class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-   UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection authorities) {
+   UserDetails mapUserFromContext(DirContextOperations ctx, String username,
+                                  Collection authorities) {
 
-      String fullname =  ctx.originalAttrs.attrs['name'].values[0]
+      String fullname = ctx.originalAttrs.attrs['name'].values[0]
       String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
-      String username = ctx.originalAttrs.attrs['samaccountname'].values[0].toString().toLowerCase()
       def title = ctx.originalAttrs.attrs['title']
 
       new MyUserDetails(username, null, true, true, true, true,
-                        authorities, fullname, email, title == null ? '' : title.values[0]) {
+                        authorities, fullname, email,
+                        title == null ? '' : title.values[0])
    }
 
    void mapUserToContext(UserDetails user, DirContextAdapter ctx) {

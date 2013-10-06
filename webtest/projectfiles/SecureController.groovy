@@ -1,26 +1,26 @@
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 class SecureController {
 
 	def springSecurityService
 
 	@Secured(['ROLE_ADMIN'])
-	def admins = {
+	def admins() {
 		renderRoles()
 	}
 
 	@Secured(['ROLE_USER'])
-	def users = {
+	def users() {
 		renderRoles()
 	}
 
 	@Secured(['ROLE_SUPERUSER'])
-	def superusers = {
+	def superusers() {
 		renderRoles()
 	}
 
 	@Secured(['ROLE_FOO_BAR'])
-	def fooBar = {
+	def fooBar() {
 		renderRoles()
 	}
 

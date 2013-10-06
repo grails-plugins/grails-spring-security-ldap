@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.springsecurity.ldap;
+package grails.plugin.springsecurity.ldap.core;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -20,7 +20,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
 import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Copied from the private implementation in <code>LdapUserDetailsManager</code> to allow overriding.
@@ -29,22 +29,22 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
  */
 public class GrailsLdapRoleMapper implements AttributesMapper {
 
-	private String _groupRoleAttributeName;
-	private String _rolePrefix = "ROLE_";
+	protected String groupRoleAttributeName;
+	protected String rolePrefix = "ROLE_";
 
 	/**
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AttributesMapper#mapFromAttributes(javax.naming.directory.Attributes)
 	 */
 	public Object mapFromAttributes(final Attributes attributes) throws NamingException {
-      Attribute roleAttr = attributes.get(_groupRoleAttributeName);
+		Attribute roleAttr = attributes.get(groupRoleAttributeName);
 
-      NamingEnumeration<?> ne = roleAttr.getAll();
-      // assert ne.hasMore();
-      Object group = ne.next();
-      String role = group.toString();
+		NamingEnumeration<?> ne = roleAttr.getAll();
+		// assert ne.hasMore();
+		Object group = ne.next();
+		String role = group.toString();
 
-      return new GrantedAuthorityImpl(_rolePrefix + role.toUpperCase());
+		return new SimpleGrantedAuthority(rolePrefix + role.toUpperCase());
 	}
 
 	/**
@@ -52,15 +52,14 @@ public class GrailsLdapRoleMapper implements AttributesMapper {
 	 * @param name the name
 	 */
 	public void setGroupRoleAttributeName(final String name) {
-		_groupRoleAttributeName = name;
+		groupRoleAttributeName = name;
 	}
 
 	/**
 	 * Dependency injection for <code>rolePrefix</code>.
-	 * @param rolePrefix defaults to 'ROLE_'.  Changing this is not recommended.
+	 * @param prefix defaults to 'ROLE_'. Changing this is not recommended.
 	 */
-	public void setRolePrefix(final String rolePrefix) {
-		_rolePrefix = rolePrefix;
+	public void setRolePrefix(final String prefix) {
+		rolePrefix = prefix;
 	}
-
 }
