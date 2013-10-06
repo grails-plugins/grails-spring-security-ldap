@@ -4,5 +4,4 @@ grails-spring-security-ldap-*.zip.sha1
 *.log
 .settings
 /target
-/docs
 /web-app
