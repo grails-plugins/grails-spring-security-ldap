@@ -1,16 +1,25 @@
-* Version 1.0.6
-** released May 22, 2012
-* Version 1.0.5
-** released July 31, 2011
-* Version 1.0.4
-** released April 19, 2011
-* Version 1.0.3
-** released March 12, 2011
-* Version 1.0.2
-** released February 14, 2011
-* Version 1.0.1
-** released August 01, 2010
-* Version 1.0
-** released July 27, 2010
-* Version 0.1
-** released June 18, 2010
+* October 5, 2013
+** 2.0-RC2 release
+** [JIRA Issues|http://jira.grails.org/issues/?jql=project%20%3D%20GPSPRINGSECURITYLDAP%20AND%20fixVersion%20%3D%20%22Grails-Spring-Security-LDAP%202.0%22%20ORDER%20BY%20updated%20DESC%2C%20priority%20DESC%2C%20created%20ASC]
+* May 22, 2012
+** 1.0.6 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=13123]
+* July 31, 2011
+** 1.0.5 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=13122]
+* April 19, 2011
+** 1.0.4 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=12091]
+* March 12, 2011
+** 1.0.3 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=12090]
+* February 14, 2011
+** 1.0.2 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=11915]
+* August 01, 2010
+** 1.0.1 release
+* July 27, 2010
+** 1.0 release
+** [JIRA Issues|http://jira.grails.org/secure/ReleaseNote.jspa?projectId=10231&amp;version=11914]
+* June 18, 2010
+** 0.1 release

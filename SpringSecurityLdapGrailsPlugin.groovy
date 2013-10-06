@@ -35,8 +35,8 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '1.0.6'
-	String grailsVersion = '1.3.3 > *'
+	String version = '2.0-RC2'
+	String grailsVersion = '2.0.0 > *'
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**'
@@ -44,7 +44,7 @@ class SpringSecurityLdapGrailsPlugin {
 	List loadAfter = ['springSecurityCore']
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
 	String documentation = 'http://grails.org/plugin/spring-security-ldap'
