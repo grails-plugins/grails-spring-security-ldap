@@ -15,20 +15,20 @@ ldap.search.filter | @'(uid={0})'@ | The filter expression used in the user sear
 ldap.search.derefLink | @false@ | Enables/disables link dereferencing during the search
 ldap.search.timeLimit | @0@ (unlimited) | The time to wait before the search fails
 ldap.search. attributesToReturn | @null@ (all) | The attributes to return as part of the search
-ldap.authenticator.useBind | @true@ | if @true@ uses a @BindAuthenticator@ to bind as the authenticating user, if @false@ uses a @PasswordComparisonAuthenticator@ to lookup the user login name and compare passwords
+ldap.authenticator.useBind | @true@ | if @true@ uses a @BindAuthenticator@ to bind as the authenticating user, if @false@ uses a @PasswordComparison Authenticator@ to lookup the user login name and compare passwords
 ldap.authenticator. attributesToReturn | @null@ (all) | names of attribute ids to return; use @null@ to return all and an empty list to return none
-ldap.authenticator.dnPatterns | @null@ (none) | optional pattern(s) used to create DN search patterns, e.g. \["cn={0},ou=people"\]
+ldap.authenticator. dnPatterns | @null@ (none) | optional pattern(s) used to create DN search patterns, e.g. \["cn={0},ou=people"\]
 ldap.authenticator. passwordAttributeName | @'userPassword'@ | the name of the password attribute to use when @useBind@ = @false@
 ldap.mapper. convertToUpperCase | @true@ | whether to uppercase retrieved role names (will also be prefixed with "ROLE_")
 ldap.mapper. passwordAttributeName | @'userPassword'@ | password attribute name to use when building the @UserDetails@
 ldap.mapper. userDetailsClass | @null@ (create an LdapUserDetailsImpl) | use @'person'@ to create a @Person@, @'inetOrgPerson'@ to create an @InetOrgPerson@, or @null@ to create an @LdapUserDetailsImpl@
 ldap.mapper.roleAttributes | @null@ | optional names of role attributes
-ldap.auth. hideUserNotFoundExceptions | @true@ | if @true@ throw a new @BadCredentialsException@, otherwise throw the original @UsernameNotFoundException@
+ldap.auth. hideUserNotFound Exceptions | @true@ | if @true@ throw a new @BadCredentialsException@, otherwise throw the original @UsernameNotFoundException@
 ldap.auth.useAuthPassword | @true@ | If @true@ use the supplied password as the credentials in the authenticationtoken, otherwise obtain the password from the UserDetails object (it may not be possible to read the password from the directory)
 ldap.context.managerDn | @'cn=admin,dc=example, dc=com'@ | DN to authenticate with
 ldap.context. managerPassword | @'secret'@ | username to authenticate with
 ldap.context.server | @'ldap://localhost:389'@ | address of the LDAP server
-ldap.context. contextFactoryClassName | @com.sun.jndi.ldap. LdapCtxFactory@ | class name of the @InitialContextFactory@ to use
+ldap.context. contextFactoryClassName | @com.sun.jndi. ldap. LdapCtxFactory@ | class name of the @InitialContextFactory@ to use
 ldap.context. dirObjectFactoryClassName | [DefaultDirObjectFactory|http://static.springsource.org/spring-ldap/site/apidocs/org/springframework/ldap/core/support/DefaultDirObjectFactory.html] | class name of the @@DirObjectFactory to use
 ldap.context. baseEnvironmentProperties | none | extra context properties
 ldap.context. cacheEnvironmentProperties | @true@ | whether environment properties should be cached between requsts
@@ -39,8 +39,8 @@ ldap.authorities. retrieveDatabaseRoles | @false@ | whether to retrieve addition
 ldap.authorities. groupRoleAttribute | @'cn'@ | The ID of the attribute which contains the role name for a group
 ldap.authorities. groupSearchFilter | @'uniquemember={0}'@ | The pattern to be used for the user search. {0} is the user's DN
 ldap.authorities. searchSubtree | @true@ | If @true@ a subtree scope search will be performed, otherwise a single-level search is used
-ldap.authorities. groupSearchBase | @'ou=groups,dc=example, dc=com'@ | The base DN from which the search for group membership should be performed
-ldap.authorities. ignorePartialResultException | @false@ | Whether @PartialResultException@s should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals.
+ldap.authorities. groupSearchBase | @'ou=groups, dc=example, dc=com'@ | The base DN from which the search for group membership should be performed
+ldap.authorities. ignorePartialResult Exception | @false@ | Whether @PartialResultException@s should be ignored in searches, typically used with Active Directory since AD servers often have a problem with referrals.
 ldap.authorities.defaultRole | none | An optional default role to be assigned to all users
 ldap.authorities.prefix | @'ROLE_'@ | The prefix prepended to group names in order to make them Spring Security Roles.  Changing this is NOT recommended as it can have unforseen consequences within the security filters.
 ldap.authorities.clean.prefix | none | An optional string prefix to strip from the beginning of LDAP group names.  For example, @'EnHS-'@ will change @EnHS-Staff-All@ to @ROLE_Staff-All@
@@ -60,11 +60,11 @@ Just like with non-LDAP persistent tokens, you need to run the @s2-create-persis
 {table}
 *Name* | *Default* | *Meaning*
 ldap.useRememberMe | @false@ | Whether to use persistent logins
-ldap.rememberMe.detailsManager.attributesToRetrieve | @null@ (all) | The attributes to return as part of the search
-ldap.rememberMe.detailsManager.groupMemberAttributeName | 'uniquemember' | The attribute which contains members of a group
-ldap.rememberMe.detailsManager.groupRoleAttributeName | 'cn' | The attribute which corresponds to the role name of a group
-ldap.rememberMe.detailsManager.groupSearchBase | 'ou=groups,dc=example,dc=com' | The DN under which groups are stored
-ldap.rememberMe.detailsManager.passwordAttributeName | 'userPassword' | Password attribute name
-ldap.rememberMe.usernameMapper.userDnBase | none, must be set, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com' | The base name of the DN
-ldap.rememberMe.usernameMapper.usernameAttribute | none, must be set, e.g. 'cn' | the attribute to append for the username component
+ldap.rememberMe.detailsManager. attributesToRetrieve | @null@ (all) | The attributes to return as part of the search
+ldap.rememberMe.detailsManager. groupMemberAttributeName | 'uniquemember' | The attribute which contains members of a group
+ldap.rememberMe.detailsManager. groupRoleAttributeName | 'cn' | The attribute which corresponds to the role name of a group
+ldap.rememberMe.detailsManager. groupSearchBase | 'ou=groups,dc=example,dc=com' | The DN under which groups are stored
+ldap.rememberMe.detailsManager. passwordAttributeName | 'userPassword' | Password attribute name
+ldap.rememberMe.usernameMapper. userDnBase | none, must be set, e.g. 'dc=example,dc=com', 'ou=users,dc=example,dc=com' | The base name of the DN
+ldap.rememberMe.usernameMapper. usernameAttribute | none, must be set, e.g. 'cn' | the attribute to append for the username component
 {table}

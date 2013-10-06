@@ -5,12 +5,11 @@ Configuring your LDAP server is beyond the scope of this document. There are man
 There isn't much that you need to do in your application to use LDAP. Just install this plugin, and configure any required parameters and whatever optional parameters you want in Config.groovy. These are described in detail in [Chapter 3|guide:3. Configuration] but typically you only need to set these properties
 
 {code}
-grails.plugin.springsecurity.ldap.context.managerDn = 'uid=admin,ou=system'
-grails.plugin.springsecurity.ldap.context.managerPassword = 'secret'
-grails.plugin.springsecurity.ldap.context.server = 'ldap://localhost:10389'
-grails.plugin.springsecurity.ldap.authorities.groupSearchBase =
-     'ou=groups,dc=yourcompany,dc=com'
-grails.plugin.springsecurity.ldap.search.base = 'dc=yourcompany,dc=com'
+grails.plugin.springsecurity.ldap.context. managerDn = 'uid=admin,ou=system'
+grails.plugin.springsecurity.ldap.context. managerPassword = 'secret'
+grails.plugin.springsecurity.ldap.context. server = 'ldap://localhost:10389'
+grails.plugin.springsecurity.ldap.authorities. groupSearchBase = 'ou=groups,dc=yourcompany,dc=com'
+grails.plugin.springsecurity.ldap.search. base = 'dc=yourcompany,dc=com'
 {code}
 
 Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this
@@ -37,15 +36,15 @@ Replace the placeholders inside [] brackets with appropriate values and remove t
 
 {code}
 // LDAP config
-grails.plugin.springsecurity.ldap.context.managerDn = '[distinguishedName]'
-grails.plugin.springsecurity.ldap.context.managerPassword = '[password]'
-grails.plugin.springsecurity.ldap.context.server = 'ldap://[ip]:[port]/'
-grails.plugin.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
-grails.plugin.springsecurity.ldap.search.base = '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
-grails.plugin.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
-grails.plugin.springsecurity.ldap.search.searchSubtree = true
-grails.plugin.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
-grails.plugin.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
+grails.plugin.springsecurity.ldap. context.managerDn = '[distinguishedName]'
+grails.plugin.springsecurity.ldap. context.managerPassword = '[password]'
+grails.plugin.springsecurity.ldap. context.server = 'ldap://[ip]:[port]/'
+grails.plugin.springsecurity.ldap. authorities.ignorePartialResultException = true // typically needed for Active Directory
+grails.plugin.springsecurity.ldap. search.base = '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
+grails.plugin.springsecurity.ldap. search.filter="sAMAccountName={0}" // for Active Directory you need this
+grails.plugin.springsecurity.ldap. search.searchSubtree = true
+grails.plugin.springsecurity.ldap. auth.hideUserNotFoundExceptions = false
+grails.plugin.springsecurity.ldap. search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
 grails.plugin.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider'] // specify this when you want to skip attempting to load from db and only use LDAP
 
 // role-specific LDAP config
@@ -86,14 +85,16 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 
 class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-   UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection authorities) {
+   UserDetails mapUserFromContext(DirContextOperations ctx, String username,
+                                  Collection authorities) {
 
       String fullname = ctx.originalAttrs.attrs['name'].values[0]
       String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
       def title = ctx.originalAttrs.attrs['title']
 
       new MyUserDetails(username, null, true, true, true, true,
-                        authorities, fullname, email, title == null ? '' : title.values[0])
+                        authorities, fullname, email,
+                        title == null ? '' : title.values[0])
    }
 
    void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
