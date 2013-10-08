@@ -47,7 +47,7 @@ class SpringSecurityLdapGrailsPlugin {
 	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
-	String documentation = 'http://grails.org/plugin/spring-security-ldap'
+	String documentation = 'http://grails-plugins.github.io/grails-spring-security-ldap/'
 
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
@@ -61,8 +61,6 @@ class SpringSecurityLdapGrailsPlugin {
 			return
 		}
 
-		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
-
 		SpringSecurityUtils.loadSecondaryConfig 'DefaultLdapSecurityConfig'
 		// have to get again after overlaying DefaultLdapSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
@@ -70,6 +68,8 @@ class SpringSecurityLdapGrailsPlugin {
 		if (!conf.ldap.active) {
 			return
 		}
+
+		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
 
 		if (printStatusMessages) {
 			println '\nConfiguring Spring Security LDAP ...'
