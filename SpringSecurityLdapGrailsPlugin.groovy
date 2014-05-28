@@ -35,8 +35,8 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper
 
 class SpringSecurityLdapGrailsPlugin {
 
-	String version = '2.0-RC2'
-	String grailsVersion = '2.0.0 > *'
+	String version = '2.0-SNAPSHOT'
+	String grailsVersion = '2.3.0 > *'
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**'
