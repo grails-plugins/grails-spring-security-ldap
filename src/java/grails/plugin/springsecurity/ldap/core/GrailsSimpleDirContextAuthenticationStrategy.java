@@ -34,7 +34,7 @@ public class GrailsSimpleDirContextAuthenticationStrategy extends SimpleDirConte
 	protected String userDn;
 
 	@Override
-	public void setupEnvironment(@SuppressWarnings("rawtypes") Hashtable env, String dn, String password) {
+	public void setupEnvironment(Hashtable<String, Object> env, String dn, String password) {
 		super.setupEnvironment(env, dn, password);
 		// Remove the pooling flag unless we are authenticating as the 'manager' user.
 		if (!userDn.equals(dn) && env.containsKey(AbstractContextSource.SUN_LDAP_POOLING_FLAG)) {

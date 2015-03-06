@@ -16,7 +16,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		String springSecurityVersion = '3.2.3.RELEASE'
+		String springSecurityVersion = '3.2.6.RELEASE'
 
 		compile "org.springframework.security:spring-security-ldap:$springSecurityVersion", {
 			excludes 'apacheds-core', 'apacheds-core-entry', 'apacheds-protocol-ldap', 'apacheds-protocol-shared',
@@ -30,13 +30,13 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		compile ':spring-security-core:2.0-RC3'
+		compile ':spring-security-core:2.0-SNAPSHOT'
 
-		compile(":hibernate:3.6.10.14") {
+		compile(":hibernate:3.6.10.17") {
 			export = false
 		}
 
-		build ':release:3.0.1', ':rest-client-builder:2.0.1', {
+		build ':release:3.0.1', ':rest-client-builder:2.0.3', {
 			export = false
 		}
 	}
