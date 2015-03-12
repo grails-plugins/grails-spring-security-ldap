@@ -12,48 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.springsecurity.ldap.core;
+package grails.plugin.springsecurity.ldap.core
 
-import org.springframework.ldap.core.AuthenticationSource;
+import groovy.transform.CompileStatic
+
+import org.springframework.ldap.core.AuthenticationSource
 
 /**
- * Copied from the package-default inner class in <code>AbstractContextSource</code>.
+ * Based on the package-default inner class in <code>AbstractContextSource</code>.
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-public class SimpleAuthenticationSource implements AuthenticationSource {
+@CompileStatic
+class SimpleAuthenticationSource implements AuthenticationSource {
 
-	protected String password;
-	protected String userDn;
-
-	/**
+	/*
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AuthenticationSource#getCredentials()
 	 */
-	public String getCredentials() {
-		return password;
-	}
+	String credentials
 
-	/**
+	/*
 	 * {@inheritDoc}
 	 * @see org.springframework.ldap.core.AuthenticationSource#getPrincipal()
 	 */
-	public String getPrincipal() {
-		return userDn;
-	}
-
-	/**
-	 * Dependency injection for the password.
-	 * @param pwd the password
-	 */
-	public void setPassword(final String pwd) {
-		password = pwd;
-	}
-
-	/**
-	 * Dependency injection for the userDn.
-	 * @param dn the userDn
-	 */
-	public void setUserDn(final String dn) {
-		userDn = dn;
-	}
+	String principal
 }

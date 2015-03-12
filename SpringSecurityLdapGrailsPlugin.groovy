@@ -96,8 +96,8 @@ class SpringSecurityLdapGrailsPlugin {
 		}
 
 		ldapAuthenticationSource(SimpleAuthenticationSource) {
-			userDn = conf.ldap.context.managerDn // 'cn=admin,dc=example,dc=com'
-			password = conf.ldap.context.managerPassword // 'secret'
+			principal = conf.ldap.context.managerDn // 'cn=admin,dc=example,dc=com'
+			credentials = conf.ldap.context.managerPassword // 'secret'
 		}
 
 		String[] searchAttributesToReturn = toStringArray(conf.ldap.search.attributesToReturn) // null - all
