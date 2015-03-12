@@ -42,13 +42,11 @@ class SpringSecurityLdapGrailsPlugin {
 		'src/docs/**'
 	]
 	List loadAfter = ['springSecurityCore']
-
 	String author = 'Burt Beckwith'
 	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'LDAP authentication support for the Spring Security plugin.'
 	String description = 'LDAP authentication support for the Spring Security plugin.'
 	String documentation = 'http://grails-plugins.github.io/grails-spring-security-ldap/'
-
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYLDAP']
