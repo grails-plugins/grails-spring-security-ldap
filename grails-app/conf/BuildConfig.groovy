@@ -23,9 +23,9 @@ grails.project.dependency.resolution = {
 			         'spring-core', 'spring-ldap-core', 'spring-security-core', 'spring-test', 'spring-tx'
 		}
 
-		compile 'net.sf.ehcache:ehcache-core:2.6.9'
+		compile 'net.sf.ehcache:ehcache:2.9.0'
 
-		runtime 'org.springframework.ldap:spring-ldap-core:2.0.2.RELEASE', {
+		runtime 'org.springframework.ldap:spring-ldap-core:2.0.3.RELEASE', {
 			excludes 'commons-lang', 'gsbase', 'junit', 'mockito-core', 'powermock-api-mockito', 'powermock-api-support',
 			         'powermock-core', 'powermock-module-junit4', 'powermock-module-junit4-common',
 			         'powermock-reflect', 'slf4j-log4j12', 'spring-beans', 'spring-core', 'spring-data-commons',
