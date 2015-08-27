@@ -12,14 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.plugin.springsecurity.ldap.core.GrailsLdapRoleMapper
-import grails.plugin.springsecurity.ldap.core.GrailsSimpleDirContextAuthenticationStrategy
-import grails.plugin.springsecurity.ldap.core.SimpleAuthenticationSource
-import grails.plugin.springsecurity.ldap.userdetails.DatabaseOnlyLdapAuthoritiesPopulator
-import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapAuthoritiesPopulator
-import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapUserDetailsManager
-import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+package grails.plugin.springsecurity.ldap
 
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.ldap.DefaultLdapUsernameToDnMapper
@@ -33,14 +26,19 @@ import org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper
 import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper
 import org.springframework.security.ldap.userdetails.PersonContextMapper
 
-class SpringSecurityLdapGrailsPlugin {
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.ldap.core.GrailsLdapRoleMapper
+import grails.plugin.springsecurity.ldap.core.GrailsSimpleDirContextAuthenticationStrategy
+import grails.plugin.springsecurity.ldap.core.SimpleAuthenticationSource
+import grails.plugin.springsecurity.ldap.userdetails.DatabaseOnlyLdapAuthoritiesPopulator
+import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapAuthoritiesPopulator
+import grails.plugin.springsecurity.ldap.userdetails.GrailsLdapUserDetailsManager
+import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+import grails.plugins.Plugin
 
-	String version = '2.0-RC4'
-	String grailsVersion = '2.3.0 > *'
-	List pluginExcludes = [
-		'docs/**',
-		'src/docs/**'
-	]
+class SpringSecurityLdapGrailsPlugin extends Plugin {
+
+	String grailsVersion = '3.0.0 > *'
 	List loadAfter = ['springSecurityCore']
 	String author = 'Burt Beckwith'
 	String authorEmail = 'burt@burtbeckwith.com'
@@ -52,7 +50,7 @@ class SpringSecurityLdapGrailsPlugin {
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYLDAP']
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-ldap']
 
-	def doWithSpring = {
+	Closure doWithSpring() {{ ->
 
 		def conf = SpringSecurityUtils.securityConfig
 		if (!conf || !conf.active) {
@@ -145,6 +143,7 @@ class SpringSecurityLdapGrailsPlugin {
 			ldapUserDetailsMapper(LdapUserDetailsMapper) {
 				convertToUpperCase = conf.ldap.mapper.convertToUpperCase // true
 				passwordAttributeName = conf.ldap.mapper.passwordAttributeName // 'userPassword'
+				rolePrefix = conf.ldap.authorities.prefix // 'ROLE_'
 				if (conf.ldap.mapper.roleAttributes) {
 					roleAttributes = conf.ldap.mapper.roleAttributes
 				}
@@ -242,7 +241,7 @@ class SpringSecurityLdapGrailsPlugin {
 		if (printStatusMessages) {
 			println '... finished configuring Spring Security LDAP\n'
 		}
-	}
+	}}
 
 	private String[] toStringArray(value) {
 		if (value == null) {

@@ -38,7 +38,7 @@ class GrailsLdapRoleMapper implements AttributesMapper {
 	/**
 	 * Dependency injection for <code>rolePrefix</code>.
 	 */
-	String rolePrefix = "ROLE_"
+	String rolePrefix = 'ROLE_'
 
 	/*
 	 * {@inheritDoc}

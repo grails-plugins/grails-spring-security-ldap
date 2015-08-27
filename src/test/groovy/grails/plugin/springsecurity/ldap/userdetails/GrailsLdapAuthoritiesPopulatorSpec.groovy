@@ -1,11 +1,11 @@
 package grails.plugin.springsecurity.ldap.userdetails
 
-import grails.test.GrailsUnitTestCase
-
 import org.springframework.ldap.core.support.LdapContextSource
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
-class GrailsLdapAuthoritiesPopulatorTests extends GrailsUnitTestCase {
+import spock.lang.Specification
+
+class GrailsLdapAuthoritiesPopulatorSpec extends Specification {
 
 	private static final List<String> rolesToTest = [
 		'EnHS-GLNE',
@@ -65,13 +65,11 @@ class GrailsLdapAuthoritiesPopulatorTests extends GrailsUnitTestCase {
 		'EnHS-All',
 		'EnHS-NCS-Reports']
 
-	private contextSource = new LdapContextSource()
+	private LdapContextSource contextSource = new LdapContextSource()
 
 	private GrailsLdapAuthoritiesPopulator grailsLdapAuthoritiesPopulator = new GrailsLdapAuthoritiesPopulator(contextSource, '')
 
-	protected void setUp() {
-		super.setUp()
-
+	def setup() {
 		grailsLdapAuthoritiesPopulator.groupRoleAttribute = 'member'
 		grailsLdapAuthoritiesPopulator.groupSearchFilter = 'fake={0}'
 		grailsLdapAuthoritiesPopulator.searchSubtree = true
@@ -85,37 +83,45 @@ class GrailsLdapAuthoritiesPopulatorTests extends GrailsUnitTestCase {
 	/**
 	 * This one test should cover everything added in the cleanRole() function
 	 */
-	void testMyRoles() {
+	def 'my roles'() {
 
+		setup:
 		grailsLdapAuthoritiesPopulator.roleStripPrefix = 'EnHS-'
 
-		rolesToTest.each { roleName ->
-			def testRole = new SimpleGrantedAuthority("ROLE_$roleName")
+		when:
 
-			// the settings should run through all the permutations in one swipe
-			def newRole = grailsLdapAuthoritiesPopulator.cleanRole(testRole)
+		def testRole = new SimpleGrantedAuthority('ROLE_' + roleName)
 
-			def cleanRoleName = 'ROLE_' + roleName.toUpperCase().replaceAll('-', '_').replaceFirst('ENHS_', '')
+		// the settings should run through all the permutations in one swipe
+		def newRole = grailsLdapAuthoritiesPopulator.cleanRole(testRole)
 
-			// make sure our test did what we expected it to
-			assert cleanRoleName == newRole.authority
-		}
+		String cleanRoleName = 'ROLE_' + roleName.toUpperCase().replaceAll('-', '_').replaceFirst('ENHS_', '')
+
+		then:
+		// make sure our test did what we expected it to
+		cleanRoleName == newRole.authority
+
+		where:
+		roleName << rolesToTest
 	}
 
 	/**
 	 * This one test should cover everything added in the cleanRole() function
 	 */
-	void testGetGroupMembershipRoles() {
+	def 'get group membership roles'() {
 
-		def testRole = new SimpleGrantedAuthority("ROLE_Test-Pre Sys-AdminTest-Pre-Test-Post-Group Test-Post")
-
+		setup:
 		grailsLdapAuthoritiesPopulator.roleStripPrefix = 'Test-Pre'
 		grailsLdapAuthoritiesPopulator.roleStripSuffix = 'Test-Post'
+
+		when:
+		def testRole = new SimpleGrantedAuthority('ROLE_Test-Pre Sys-AdminTest-Pre-Test-Post-Group Test-Post')
 
 		// the settings should run through all the permutations in one swipe
 		def newRole = grailsLdapAuthoritiesPopulator.cleanRole(testRole)
 
+		then:
 		// make sure our test did what we expected it to
-		assert "ROLE_SYS_ADMINTEST_PRE_TEST_POST_GROUP" == newRole.authority
+		'ROLE_SYS_ADMINTEST_PRE_TEST_POST_GROUP' == newRole.authority
 	}
 }
