@@ -1,50 +1,74 @@
-class Person1FunctionalTests extends AbstractSecurityWebTest {
+import pages.IndexPage
+import pages.SecureAdminPage
+import pages.SecureFooBarPage
+import pages.SecureSuperuserPage
+import pages.SecureUserPage
+
+class Person1FunctionalSpec extends AbstractSecurityFunctionalSpec {
 
 	// person1 has ROLE_USER and ROLE_FOO_BAR (from group "foo bar") from LDAP
 
-	void testSecurity() {
-		checkSecuredUrlsNotVisibleWithoutAuth()
-		loginAndCheckAllowed()
+	void 'secured urls are not visible without auth'() {
+		when:
+		to SecureAdminPage
+
+		then:
+		assertContentContains 'Please Login'
+
+		when:
+		to SecureUserPage
+
+		then:
+		assertContentContains 'Please Login'
+
+		when:
+		to SecureSuperuserPage
+
+		then:
+		assertContentContains 'Please Login'
+
+		when:
+		to SecureFooBarPage
+
+		then:
+		assertContentContains 'Please Login'
 	}
 
-	private void checkSecuredUrlsNotVisibleWithoutAuth() {
-		get '/secure/admins'
-		assertContentContains 'Please Login'
+	void 'secured urls are visible when authenticated'() {
+		when:
+		login 'person1', 'password1'
 
-		get '/secure/users'
-		assertContentContains 'Please Login'
+		then:
+		at IndexPage
 
-		get '/secure/superusers'
-		assertContentContains 'Please Login'
-	}
+		when:
+		to SecureUserPage
 
-	private void loginAndCheckAllowed() {
-		get '/login/auth'
-		assertContentContains 'Please Login'
-
-		form {
-			j_username = 'person1'
-			j_password = 'password1'
-			_spring_security_remember_me = true
-			clickButton 'Login'
-		}
-
-		get '/secure/users'
+		then:
 		assertContentContains 'ROLE_USER'
 		assertContentContains 'ROLE_FOO_BAR'
 		assertContentDoesNotContain 'ROLE_ADMIN'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
 
-		get '/secure/fooBar'
+		when:
+		to SecureFooBarPage
+
+		then:
 		assertContentContains 'ROLE_USER'
 		assertContentContains 'ROLE_FOO_BAR'
 		assertContentDoesNotContain 'ROLE_ADMIN'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
 
-		get '/secure/admins'
+		when:
+		to SecureAdminPage
+
+		then:
 		assertContentContains "Sorry, you're not authorized to view this page."
 
-		get '/secure/superusers'
+		when:
+		to SecureSuperuserPage
+
+		then:
 		assertContentContains "Sorry, you're not authorized to view this page."
 	}
 }
