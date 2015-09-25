@@ -1,0 +1,189 @@
+[[usage]]
+== Usage
+
+[NOTE]
+====
+Configuring your LDAP server is beyond the scope of this document. There are many different approaches and this will most likely be done by IT staff. It's assumed here that you already have a running LDAP or Active Directory server.
+====
+
+=== Installation
+
+There isn't much that you need to do in your application to use LDAP. Add a dependency in `build.gradle` for this plugin:
+
+[source,java]
+----
+dependencies {
+   ...
+   compile 'org.grails.plugins:spring-security-ldap:3.0.0.M1'
+}
+----
+
+then configure any required parameters and whatever optional parameters you want in application.yml or application.groovy. These are described in detail in the <<configuration>> section but typically you only need to set these properties:
+
+[source,yaml]
+----
+grails:
+   plugin:
+      springsecurity:
+         ldap:
+            context:
+               managerDn: 'uid=admin,ou=system'
+               managerPassword: secret
+               server: 'ldap://localhost:10389'
+            authorities:
+               groupSearchBase: 'ou=groups,dc=yourcompany,dc=com'
+            search:
+               base: 'dc=yourcompany,dc=com'
+----
+
+Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this
+
+[source,yaml]
+----
+grails:
+   plugin:
+      springsecurity:
+         ldap:
+            authorities:
+               retrieveDatabaseRoles: true
+----
+
+to do an extra database lookup after the LDAP lookup.
+
+Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.
+
+[source,yaml]
+----
+grails:
+   plugin:
+      springsecurity:
+         password:
+            algorithm: 'SHA-256'
+----
+
+=== Sample config settings for Active Directory
+
+Active directory is somewhat different although still relatively painless if you know what you are doing. Use these example configuration options to get started (tested in Windows Server 2008):
+
+[NOTE]
+====
+Replace the placeholders inside [] brackets with appropriate values and remove the [] chars
+====
+
+[source,yaml]
+----
+grails:
+   plugin:
+      springsecurity:
+
+         # LDAP config
+         providerNames: ['ldapAuthProvider', 'anonymousAuthenticationProvider'] # specify this when you want to skip attempting to load from db and only use LDAP
+         ldap:
+            context:
+               managerDn: '[distinguishedName]'
+               managerDn: '[distinguishedName]'
+               managerPassword: '[password]'
+               server: 'ldap://[ip]:[port]/'
+            authorities:
+               ignorePartialResultException: true # typically needed for Active Directory
+            search:
+               base: '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
+               filter: 'sAMAccountName={0}' # for Active Directory you need this
+               searchSubtree: true
+               attributesToReturn: ['mail', 'displayName'] # extra attributes you want returned; see below for custom classes that access this data
+            auth:
+               hideUserNotFoundExceptions: false
+
+            # role-specific LDAP config
+            useRememberMe: false
+            authorities:
+               retrieveGroupRoles: true
+               groupSearchBase: '[the base directory to start the search.  usually something like dc=mycompany,dc=com]'
+               # If you don't want to support group membership recursion (groups in groups),
+               # then use the following setting
+               # grails.plugin.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}'
+               # If you wish to support groups with group as members (recursive groups), use
+               # the following:
+               # groupSearchFilter: '(member:1.2.840.113556.1.4.1941:={0})'
+----
+
+=== Custom UserDetailsContextMapper
+
+There are three options for mapping LDAP attributes to `UserDetails` data (as specified by the `grails.plugin.springsecurity.ldap.mapper.userDetailsClass` config attribute) and hopefully one of those will be sufficient for your needs. If not, it's easy to implement http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html[UserDetailsContextMapper] yourself.
+
+Create a Groovy or Java class in `src/main/groovy` that implements http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html[UserDetailsContextMapper] and register it in `grails-app/conf/spring/resources.groovy`:
+
+[source,java]
+----
+import com.mycompany.myapp.MyUserDetailsContextMapper
+
+beans = {
+   ldapUserDetailsMapper(MyUserDetailsContextMapper) {
+      // bean attributes
+   }
+}
+----
+
+For example, here's a custom `UserDetailsContextMapper` that extracts three additional fields from LDAP (fullname, email, and title)
+
+[source,java]
+----
+package com.mycompany.myapp
+
+import org.springframework.ldap.core.DirContextAdapter
+import org.springframework.ldap.core.DirContextOperations
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
+
+class MyUserDetailsContextMapper implements UserDetailsContextMapper {
+
+   UserDetails mapUserFromContext(DirContextOperations ctx, String username,
+                                  Collection authorities) {
+
+      String fullname = ctx.originalAttrs.attrs['name'].values[0]
+      String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
+      def title = ctx.originalAttrs.attrs['title']
+
+      new MyUserDetails(username, null, true, true, true, true,
+                        authorities, fullname, email,
+                        title == null ? '' : title.values[0])
+   }
+
+   void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
+      throw new IllegalStateException("Only retrieving data from AD is currently supported")
+   }
+}
+----
+
+and a custom `UserDetails` class to hold the extra fields:
+
+[source,java]
+----
+package com.mycompany.myapp
+
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.User
+
+class MyUserDetails extends User {
+
+   // extra instance variables
+   final String fullname
+   final String email
+   final String title
+
+   MyUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
+         boolean credentialsNonExpired, boolean accountNonLocked,
+         Collection<GrantedAuthority> authorities, String fullname,
+         String email, String title) {
+
+      super(username, password, enabled, accountNonExpired, credentialsNonExpired,
+            accountNonLocked, authorities)
+
+      this.fullname = fullname
+      this.email = email
+      this.title = title
+   }
+}
+----
+
+Here we extend the standard Spring Security `User` class for convenience, but you could also directly implement the interface or use a different base class.
