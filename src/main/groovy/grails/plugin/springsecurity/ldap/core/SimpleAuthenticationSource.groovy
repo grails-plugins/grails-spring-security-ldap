@@ -20,20 +20,11 @@ import org.springframework.ldap.core.AuthenticationSource
 
 /**
  * Based on the package-default inner class in <code>AbstractContextSource</code>.
+ *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 @CompileStatic
 class SimpleAuthenticationSource implements AuthenticationSource {
-
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AuthenticationSource#getCredentials()
-	 */
 	String credentials
-
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AuthenticationSource#getPrincipal()
-	 */
 	String principal
 }

@@ -23,7 +23,7 @@ import org.springframework.ldap.core.AttributesMapper
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 /**
- * Based onthe private implementation in <code>LdapUserDetailsManager</code> to allow overriding.
+ * Based on the private implementation in <code>LdapUserDetailsManager</code> to allow overriding.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
@@ -40,10 +40,6 @@ class GrailsLdapRoleMapper implements AttributesMapper {
 	 */
 	String rolePrefix = 'ROLE_'
 
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AttributesMapper#mapFromAttributes(javax.naming.directory.Attributes)
-	 */
 	def mapFromAttributes(Attributes attributes) throws NamingException {
 		new SimpleGrantedAuthority(rolePrefix + attributes.get(groupRoleAttributeName).all.next().toString().toUpperCase())
 	}

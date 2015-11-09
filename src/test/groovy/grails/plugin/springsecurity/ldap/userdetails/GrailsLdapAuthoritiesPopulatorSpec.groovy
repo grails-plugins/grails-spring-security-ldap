@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class GrailsLdapAuthoritiesPopulatorSpec extends Specification {
 
-	private static final List<String> rolesToTest = [
+	private static final String[] rolesToTest = [
 		'EnHS-GLNE',
 		'EnHS-NCS-Financial',
 		'EnHS-WBFCR',
@@ -69,7 +69,7 @@ class GrailsLdapAuthoritiesPopulatorSpec extends Specification {
 
 	private GrailsLdapAuthoritiesPopulator grailsLdapAuthoritiesPopulator = new GrailsLdapAuthoritiesPopulator(contextSource, '')
 
-	def setup() {
+	void setup() {
 		grailsLdapAuthoritiesPopulator.groupRoleAttribute = 'member'
 		grailsLdapAuthoritiesPopulator.groupSearchFilter = 'fake={0}'
 		grailsLdapAuthoritiesPopulator.searchSubtree = true
@@ -83,9 +83,9 @@ class GrailsLdapAuthoritiesPopulatorSpec extends Specification {
 	/**
 	 * This one test should cover everything added in the cleanRole() function
 	 */
-	def 'my roles'() {
+	void 'my roles'() {
 
-		setup:
+		given:
 		grailsLdapAuthoritiesPopulator.roleStripPrefix = 'EnHS-'
 
 		when:
@@ -108,9 +108,9 @@ class GrailsLdapAuthoritiesPopulatorSpec extends Specification {
 	/**
 	 * This one test should cover everything added in the cleanRole() function
 	 */
-	def 'get group membership roles'() {
+	void 'get group membership roles'() {
 
-		setup:
+		given:
 		grailsLdapAuthoritiesPopulator.roleStripPrefix = 'Test-Pre'
 		grailsLdapAuthoritiesPopulator.roleStripSuffix = 'Test-Post'
 
