@@ -1,5 +1,7 @@
 === Release History
 
+* November 16, 2015
+** 3.0.0.M1 release
 * October 5, 2013
 ** 2.0-RC2 release
 ** http://jira.grails.org/issues/?jql=project%20%3D%20GPSPRINGSECURITYLDAP%20AND%20fixVersion%20%3D%20%22Grails-Spring-Security-LDAP%202.0%22%20ORDER%20BY%20updated%20DESC%2C%20priority%20DESC%2C%20created%20ASC[JIRA Issues]
