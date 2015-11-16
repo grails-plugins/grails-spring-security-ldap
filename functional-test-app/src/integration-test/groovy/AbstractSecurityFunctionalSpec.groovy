@@ -5,11 +5,10 @@ import pages.LogoutPage
 import spock.lang.Stepwise
 
 @Integration
-//@Rollback
 @Stepwise
 abstract class AbstractSecurityFunctionalSpec extends GebReportingSpec {
 
-	def setup() {
+	void setup() {
 		logout()
 	}
 
