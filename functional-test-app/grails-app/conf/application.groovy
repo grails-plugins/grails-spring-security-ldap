@@ -25,20 +25,20 @@ grails {
 			}
 		}
 		types = [
-				  all          : '*/*',
-				  atom         : 'application/atom+xml',
-				  css          : 'text/css',
-				  csv          : 'text/csv',
-				  form         : 'application/x-www-form-urlencoded',
-				  html         : ['text/html', 'application/xhtml+xml'],
-				  js           : 'text/javascript',
-				  json         : ['application/json', 'text/json'],
-				  multipartForm: 'multipart/form-data',
-				  pdf          : 'application/pdf',
-				  rss          : 'application/rss+xml',
-				  text         : 'text/plain',
-				  hal          : ['application/hal+json', 'application/hal+xml'],
-				  xml          : ['text/xml', 'application/xml']
+			all           : '*/*',
+			atom          : 'application/atom+xml',
+			css           : 'text/css',
+			csv           : 'text/csv',
+			form          : 'application/x-www-form-urlencoded',
+			html          : ['text/html', 'application/xhtml+xml'],
+			js            : 'text/javascript',
+			json          : ['application/json', 'text/json'],
+			multipartForm : 'multipart/form-data',
+			pdf           : 'application/pdf',
+			rss           : 'application/rss+xml',
+			text          : 'text/plain',
+			hal           : ['application/hal+json', 'application/hal+xml'],
+			xml           : ['text/xml', 'application/xml']
 		]
 	}
 	urlmapping {
@@ -68,15 +68,8 @@ grails {
 
 	plugin {
 		springsecurity {
-			userLookup {
-				userDomainClassName = 'com.test.User'
-				authorityJoinClassName = 'com.test.UserRole'
-			}
 			authority {
 				className = 'com.test.Role'
-			}
-			logout {
-				postOnly = false
 			}
 			controllerAnnotations.staticRules = [
 				[pattern: '/',               access: 'permitAll'],
@@ -90,9 +83,17 @@ grails {
 				[pattern: '/**/images/**',   access: 'permitAll'],
 				[pattern: '/**/favicon.ico', access: 'permitAll']
 			]
+			fii.rejectPublicInvocations = true
+			logout.postOnly = false
+			password.algorithm = 'SHA-256'
+			rejectIfNoRule = false
 			rememberMe {
 				persistent = true
 				persistentToken.domainClassName = 'com.test.PersistentLogin'
+			}
+			userLookup {
+				userDomainClassName = 'com.test.User'
+				authorityJoinClassName = 'com.test.UserRole'
 			}
 
 			ldap {
@@ -115,20 +116,12 @@ grails {
 						userDnBase = 'dc=d1,dc=example,dc=com'
 						usernameAttribute = 'cn'
 					}
-					search {
-						base = 'dc=d1,dc=example,dc=com'
-						filter = '(uid={0})'
-					}
-					useRememberMe = true
 				}
-
-				fii {
-					rejectPublicInvocations = true
+				search {
+					base = 'dc=d1,dc=example,dc=com'
+					filter = '(uid={0})'
 				}
-				password {
-					algorithm = 'SHA-256'
-				}
-				rejectIfNoRule = false
+				useRememberMe = true
 			}
 		}
 	}
