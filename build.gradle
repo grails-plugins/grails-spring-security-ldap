@@ -57,9 +57,9 @@ dependencies {
 	provided 'org.grails:grails-dependencies'
 	provided 'org.grails:grails-web-boot'
 
-	compile 'org.grails.plugins:spring-security-core:3.0.0.M1'
+	compile 'org.grails.plugins:spring-security-core:3.0.0.M2'
 
-	String springSecurityVersion = '3.2.9.RELEASE'
+	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-ldap:$springSecurityVersion", {
 		['apacheds-core', 'apacheds-core-entry', 'apacheds-protocol-ldap', 'apacheds-protocol-shared',
 		 'apacheds-server-jndi', 'commons-logging', 'fest-assert', 'jcl-over-slf4j', 'junit',
@@ -68,7 +68,7 @@ dependencies {
 		 'spring-test', 'spring-tx'].each { exclude module: it }
 	}
 
-	compile 'org.springframework.ldap:spring-ldap-core:2.0.2.RELEASE', {
+	compile 'org.springframework.ldap:spring-ldap-core:2.0.4.RELEASE', {
 		['commons-lang', 'gsbase', 'junit', 'mockito-core', 'powermock-api-mockito',
 		 'powermock-api-support', 'powermock-core', 'powermock-module-junit4',
 		 'powermock-module-junit4-common', 'powermock-reflect', 'slf4j-log4j12', 'spring-beans',
