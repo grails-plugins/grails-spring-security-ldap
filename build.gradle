@@ -110,7 +110,3 @@ task docs(dependsOn: asciidoctor) << {
 
 	file('build/docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 }
-
-task wrapper(type: Wrapper) {
-	gradleVersion = gradleWrapperVersion
-}

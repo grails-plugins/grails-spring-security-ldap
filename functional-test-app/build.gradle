@@ -71,7 +71,3 @@ dependencies {
 
 	console 'org.grails:grails-console'
 }
-
-task wrapper(type: Wrapper) {
-	gradleVersion = gradleWrapperVersion
-}
