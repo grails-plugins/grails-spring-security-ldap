@@ -20,7 +20,7 @@ grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 
 to do an extra database lookup after the LDAP lookup.
 
-Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.
+Depending on how passwords are hashed in LDAP you may also need to configure the hashing algorithm, e.g.
 
 {code}
 grails.plugin.springsecurity.password.algorithm = 'SHA-256'
