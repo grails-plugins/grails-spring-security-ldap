@@ -4,7 +4,7 @@ set -e
 
 rm -rf build
 
-./gradlew clean check assemble install --stacktrace
+./gradlew clean check install --stacktrace
 
 functional-test-app/run_functional_tests.sh
 
