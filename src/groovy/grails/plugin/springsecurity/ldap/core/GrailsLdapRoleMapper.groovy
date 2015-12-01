@@ -40,10 +40,6 @@ class GrailsLdapRoleMapper implements AttributesMapper {
 	 */
 	String rolePrefix = "ROLE_"
 
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AttributesMapper#mapFromAttributes(javax.naming.directory.Attributes)
-	 */
 	def mapFromAttributes(Attributes attributes) throws NamingException {
 		new SimpleGrantedAuthority(rolePrefix + attributes.get(groupRoleAttributeName).all.next().toString().toUpperCase())
 	}

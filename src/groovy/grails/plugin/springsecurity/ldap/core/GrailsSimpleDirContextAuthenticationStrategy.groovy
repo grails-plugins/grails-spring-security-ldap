@@ -34,12 +34,12 @@ class GrailsSimpleDirContextAuthenticationStrategy extends SimpleDirContextAuthe
 	String userDn
 
 	@Override
-	void setupEnvironment(@SuppressWarnings("rawtypes") Hashtable env, String dn, String password) {
+	void setupEnvironment(Hashtable<String, Object> env, String dn, String password) {
 		super.setupEnvironment env, dn, password
 
 		// Remove the pooling flag unless we are authenticating as the 'manager' user.
 		if (userDn != dn && env.remove(AbstractContextSource.SUN_LDAP_POOLING_FLAG)) {
-			log.debug 'Removed pooling flag for user {0}', dn
+			log.debug 'Removed pooling flag for user {}', dn
 		}
 	}
 }

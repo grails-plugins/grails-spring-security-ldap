@@ -24,16 +24,6 @@ import org.springframework.ldap.core.AuthenticationSource
  */
 @CompileStatic
 class SimpleAuthenticationSource implements AuthenticationSource {
-
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AuthenticationSource#getCredentials()
-	 */
 	String credentials
-
-	/*
-	 * {@inheritDoc}
-	 * @see org.springframework.ldap.core.AuthenticationSource#getPrincipal()
-	 */
 	String principal
 }
