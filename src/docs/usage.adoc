@@ -51,7 +51,7 @@ grails:
 
 to do an extra database lookup after the LDAP lookup.
 
-Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.
+Depending on how passwords are hashed in LDAP you may also need to configure the hash algorithm, e.g.
 
 [source,yaml]
 ----
