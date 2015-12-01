@@ -47,7 +47,7 @@ class SpringSecurityLdapGrailsPlugin extends Plugin {
 	String documentation = 'http://grails-plugins.github.io/grails-spring-security-ldap/'
 	String license = 'APACHE'
 	def organization = [name: 'Grails', url: 'http://www.grails.org/']
-	def issueManagement = [url: 'http://jira.grails.org/browse/GPSPRINGSECURITYLDAP']
+	def issueManagement = [url: 'https://github.com/grails-plugins/grails-spring-security-ldap/issues']
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-ldap']
 
 	Closure doWithSpring() {{ ->
