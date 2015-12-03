@@ -1,7 +1,6 @@
 <html>
 	<head>
 		<title>Page Not Found</title>
-		<asset:stylesheet src='errors.css'/>
 	</head>
 	<body>
 		<ul class="errors">
