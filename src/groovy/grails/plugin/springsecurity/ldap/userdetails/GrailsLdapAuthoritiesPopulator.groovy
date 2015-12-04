@@ -114,7 +114,7 @@ class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator imp
 
 	@Override
 	Set<GrantedAuthority> getGroupMembershipRoles(String userDn, String username) {
-		super.getGroupMembershipRoles(userDn, username).collect { cleanRole it } as Set
+		super.getGroupMembershipRoles(userDn, username).collect { cleanRole((GrantedAuthority)it) } as Set
 	}
 
 	@Override
