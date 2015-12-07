@@ -1,9 +1,29 @@
 import grails.util.BuildSettings
 import grails.util.Environment
 
-appender('STDOUT', ConsoleAppender) {
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.LoggingEvent
+import org.slf4j.LoggerFactory
+
+String defaultPattern = '%-65(%.-2level %date{HH:mm:ss.SSS} %logger{32}) - %message%n'
+
+class ExceptionFilteringConsoleAppender extends ConsoleAppender<LoggingEvent> {
+
+	protected void writeOut(LoggingEvent event) throws IOException {
+		if (event.throwableProxy) {
+			if (event.level == DEBUG || event.loggerName == 'org.springframework.boot.context.web.ErrorPageFilter') {
+				event = new LoggingEvent(Logger.FQCN, LoggerFactory.getLogger(event.loggerName) as Logger,
+						event.level, event.message, null, event.argumentArray)
+			}
+		}
+
+		super.writeOut event
+	}
+}
+
+appender('STDOUT', ExceptionFilteringConsoleAppender) {
 	encoder(PatternLayoutEncoder) {
-		pattern = '%level %logger - %msg%n'
+		pattern = defaultPattern
 	}
 }
 
@@ -11,8 +31,6 @@ appender('STDOUT', ConsoleAppender) {
 //logger 'org.springframework.security', DEBUG
 //logger 'org.hibernate.SQL', DEBUG
 //logger 'org.hibernate.type.descriptor.sql.BasicBinder', TRACE
-
-logger 'org.springframework.security', WARN
 
 root ERROR, ['STDOUT']
 
