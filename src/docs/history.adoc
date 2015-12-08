@@ -1,5 +1,9 @@
 === Release History
 
+* December 8, 2015
+** 3.0.0 release
+* December 7, 2015
+** 2.0.0 release
 * November 16, 2015
 ** 3.0.0.M1 release
 * October 5, 2013
