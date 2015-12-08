@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Spring Security LDAP Plugin 2.0-RC2</title>
+        <title>Spring Security LDAP Plugin 2.0.0</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -56,7 +56,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Spring Security LDAP Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Burt Beckwith</p>
-                            <p><strong>Version:</strong> 2.0-RC2</p>
+                            <p><strong>Version:</strong> 2.0.0</p>
                             
                         </div>
 
@@ -84,6 +84,10 @@ The LDAP plugin adds support for LDAP and Active Directory authentication to a G
 
 <h2 id="history">1.1 History</h2>
 <ul class="star">
+<li>December 7, 2015</li>
+<ul class="star">
+<li>2.0.0 release</li>
+</ul>
 <li>October 5, 2013</li>
 <ul class="star">
 <li>2.0-RC2 release</li>
@@ -136,7 +140,7 @@ Configuring your LDAP server is beyond the scope of this document. There are man
 grails.plugin.springsecurity.ldap.context. managerPassword = 'secret'
 grails.plugin.springsecurity.ldap.context. server = 'ldap://localhost:10389'
 grails.plugin.springsecurity.ldap.authorities. groupSearchBase = 'ou=groups,dc=yourcompany,dc=com'
-grails.plugin.springsecurity.ldap.search. base = 'dc=yourcompany,dc=com'</pre></div><p class="paragraph"/>Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = <span class="java&#45;keyword">true</span></pre></div><p class="paragraph"/>to do an extra database lookup after the LDAP lookup.<p class="paragraph"/>Depending on how passwords are encrypted in LDAP you may also need to configure the encryption algorithm, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.password.algorithm = 'SHA&#45;256'</pre></div><p class="paragraph"/><h4> Sample Config.groovy settings for Active Directory</h4><p class="paragraph"/>Active directory is somewhat different although still relatively painless if you know what you are doing. Use these example configuration options to get started (tested in Windows Server 2008):<p class="paragraph"/><blockquote class="note">
+grails.plugin.springsecurity.ldap.search. base = 'dc=yourcompany,dc=com'</pre></div><p class="paragraph"/>Often all role information will be stored in LDAP, but if you want to also assign application-specific roles to users in the database, then add this<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = <span class="java&#45;keyword">true</span></pre></div><p class="paragraph"/>to do an extra database lookup after the LDAP lookup.<p class="paragraph"/>Depending on how passwords are hashed in LDAP you may also need to configure the hashing algorithm, e.g.<p class="paragraph"/><div class="code"><pre>grails.plugin.springsecurity.password.algorithm = 'SHA&#45;256'</pre></div><p class="paragraph"/><h4> Sample Config.groovy settings for Active Directory</h4><p class="paragraph"/>Active directory is somewhat different although still relatively painless if you know what you are doing. Use these example configuration options to get started (tested in Windows Server 2008):<p class="paragraph"/><blockquote class="note">
 Replace the placeholders inside  brackets with appropriate values and remove the  chars
 </blockquote><p class="paragraph"/><div class="code"><pre>// LDAP config
 grails.plugin.springsecurity.ldap. context.managerDn = '&#91;distinguishedName&#93;'
@@ -221,17 +225,5 @@ Just like with non-LDAP persistent tokens, you need to run the <code>s2-create-p
 
 <script type="text/javascript" src="../js/docs.js"></script>
 
-    
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-16219500-1']);
-	_gaq.push(['_trackPageview']);
-
-	(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
-</script>
-</body>
+    </body>
 </html>

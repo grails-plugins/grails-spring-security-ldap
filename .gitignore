@@ -1,7 +1,8 @@
-plugin.xml
-grails-spring-security-ldap-*.zip
-grails-spring-security-ldap-*.zip.sha1
 *.log
-.settings
+/.gradle
+/build
+/grails-spring-security-ldap-*.zip
+/grails-spring-security-ldap-*.zip.sha1
+/plugin.xml
 /target
 /web-app
