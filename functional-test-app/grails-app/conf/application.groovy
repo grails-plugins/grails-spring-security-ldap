@@ -83,10 +83,7 @@ grails {
 				[pattern: '/**/images/**',   access: 'permitAll'],
 				[pattern: '/**/favicon.ico', access: 'permitAll']
 			]
-			fii.rejectPublicInvocations = true
-			logout.postOnly = false
 			password.algorithm = 'SHA-256'
-			rejectIfNoRule = false
 			rememberMe {
 				persistent = true
 				persistentToken.domainClassName = 'com.test.PersistentLogin'
