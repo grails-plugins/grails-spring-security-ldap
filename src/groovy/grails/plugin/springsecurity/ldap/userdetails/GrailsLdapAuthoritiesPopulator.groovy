@@ -39,9 +39,6 @@ class GrailsLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator imp
 	/** Dependency injection for whether to retrieve roles from the database in addition to LDAP. */
 	Boolean retrieveDatabaseRoles
 
-	/** Dependency injection for the name of the rolePrefix to use when creating new roles. */
-	String rolePrefix = 'ROLE_'
-
 	protected String roleStripPrefix
 	protected String roleStripSuffix
 	protected boolean roleConvertDashes = false
