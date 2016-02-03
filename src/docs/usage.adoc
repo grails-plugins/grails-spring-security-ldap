@@ -141,9 +141,9 @@ class MyUserDetailsContextMapper implements UserDetailsContextMapper {
    UserDetails mapUserFromContext(DirContextOperations ctx, String username,
                                   Collection authorities) {
 
-      String fullname = ctx.originalAttrs.attrs['name'].values[0]
-      String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
-      def title = ctx.originalAttrs.attrs['title']
+      String fullname = ctx.originalAttrs.attributes['name'].values[0]
+      String email = ctx.originalAttrs.attributes['mail'].values[0].toString().toLowerCase()
+      def title = ctx.originalAttrs.attributes['title']
 
       new MyUserDetails(username, null, true, true, true, true,
                         authorities, fullname, email,
