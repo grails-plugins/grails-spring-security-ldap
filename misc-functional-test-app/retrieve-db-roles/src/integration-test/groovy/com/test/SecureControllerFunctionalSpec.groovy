@@ -67,7 +67,7 @@ class SecureControllerFunctionalSpec extends AbstractSecurityFunctionalSpec {
 		at SecureUserPage
 
 		then:
-		assertContentDoesNotContain 'ROLE_USER' // TODO: is this a bug
+		assertContentContains 'ROLE_USER'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
 
 		when:

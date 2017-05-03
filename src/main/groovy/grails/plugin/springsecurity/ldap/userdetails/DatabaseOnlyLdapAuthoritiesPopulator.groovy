@@ -40,23 +40,25 @@ class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator, 
 
 	Collection<GrantedAuthority> getGrantedAuthorities(DirContextOperations userData, String username) {
 
+		def roles = [] as Set<GrantedAuthority>
+		if (defaultRole) {
+			roles << defaultRole
+		}
+
 		UserDetails dbDetails
 		try {
 			dbDetails = userDetailsService.loadUserByUsername(username, true)
 		}
 		catch (UsernameNotFoundException ignored) {
 			// just looking for roles, so ignore the UsernameNotFoundException
-			return AuthorityUtils.NO_AUTHORITIES
+			return roles ?: AuthorityUtils.NO_AUTHORITIES
 		}
 
 		if (dbDetails.authorities == null) {
-			return AuthorityUtils.NO_AUTHORITIES
+			return roles ?: AuthorityUtils.NO_AUTHORITIES
 		}
 
-		Collection<GrantedAuthority> roles = new HashSet<GrantedAuthority>(dbDetails.authorities)
-		if (defaultRole) {
-			roles << defaultRole
-		}
+		roles.addAll(dbDetails.authorities)
 
 		roles
 	}
