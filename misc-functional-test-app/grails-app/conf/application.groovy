@@ -37,7 +37,8 @@ grails {
 				}
 				authorities {
 					ignorePartialResultException = true
-					retrieveGroupRoles = false
+					retrieveGroupRoles = true
+					groupSearchBase='ou=mathematicians,dc=example,dc=com'
 					retrieveDatabaseRoles = true
 					defaultRole = 'ROLE_USER'
 				}
