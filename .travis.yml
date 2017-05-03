@@ -9,11 +9,11 @@ before_cache:
 jdk:
 - oraclejdk8
 install: true
-script: "./travis-build.sh"
+script: "./publish-docs.sh"
 env:
   global:
-  - GIT_NAME="Burt Beckwith"
-  - GIT_EMAIL="burt@burtbeckwith.com"
-  - secure: Fxiq+L4cvjqXa/7qVUnt9x0BNEMM86lbqgFpGTqXNVdJ5RJVCmiLKUQd1pTm58aglCs60+ETVbEuPlwgtD+XhVGLvfCfBBVVcXaCfI4ObwcF60u9TTjWzIYeaWQbvC88dzMbO+oHAKGfv/Kcr5aUMxvK+C/ko4iKaAKIML1JlQU= # BINTRAY_USER
-  - secure: Tia9y60Pk2srHQrtDbi4usrag8M/mppdK0KdQKAFXT6xmMyb1ziIeHjoZJ/k5J2h8jTjzL3BGr98n4aDl3hPlnYexNgTLXIBkX+z9aFLgpsNjksw/OvfQoAKbNNzua+N/FRFBFvyac/Xdupatc7RQCG6+vPI9bz6jbvO0YyJaAY= # BINTRAY_KEY
-  - secure: VrN+Gsf+2yr517yOTnqh1FUnBJegTDuwVJQz+uuX7G253OI0WDBmcAxNzEb/Ydr4cTnbNB0M2OzgDVTVD0cOrml7QZ9Idd9wg2QkId9INW+aYCjwjfVxxbGmolSyusQGk0BoJuamsHjt55VS4phx05vbIGZtgUZv8Vr3ONnm1Hs= # GH_TOKEN
+    - secure: Osil0VZDHymxaE9OesJwMjCiNp1EmmEWIsvbqLqQJ/NGTaVWRj8p7f2KY2MOZYnn5IH+54lAN4cVmmx8eDKs7nzSQrg89e+oB1NoE+73keAktBbMZ0M01U6BZ9xM4MW0rvfW8Vc1NQ9JHrXlVDwLC6kD8yBzzsxDi5lC7gf5MrM= # GIT_NAME
+    - secure: A08+ltKc9CnBLZQWtf0aWesFwQ1hJsw+E8EiHqd5qPfdypU1pFaXQCzQsXyS+HgAPeLRwmo02ZFaBBW/uMwj+yZYoN1XPTunc3LOS9ec+EfRiXIQdutOnlYp6PAPX82sRMe+yurV8p1/O0PkSAvna6kTKwH+G8s0uLfH7owiV7s= # GIT_EMAIL
+    - secure: Fxiq+L4cvjqXa/7qVUnt9x0BNEMM86lbqgFpGTqXNVdJ5RJVCmiLKUQd1pTm58aglCs60+ETVbEuPlwgtD+XhVGLvfCfBBVVcXaCfI4ObwcF60u9TTjWzIYeaWQbvC88dzMbO+oHAKGfv/Kcr5aUMxvK+C/ko4iKaAKIML1JlQU= # BINTRAY_USER
+    - secure: Tia9y60Pk2srHQrtDbi4usrag8M/mppdK0KdQKAFXT6xmMyb1ziIeHjoZJ/k5J2h8jTjzL3BGr98n4aDl3hPlnYexNgTLXIBkX+z9aFLgpsNjksw/OvfQoAKbNNzua+N/FRFBFvyac/Xdupatc7RQCG6+vPI9bz6jbvO0YyJaAY= # BINTRAY_KEY
+    - secure: QVUxm+rqKkWVoJwr6Ixjmi3AAJkGufFYvP6O0xpLUJC7xjmROFoP2TPJPGGx976cc2inTzee7U8Y5JOolYfqMaldUiiLgztAgguqyhFBYDZ/5pSYxhDJi3h1gZ2BXRQTo8Sd3OEnUG64CHoWrPm6h6nBjtQH7+sUpgHTvfsJ1Gc= # GH_TOKEN
