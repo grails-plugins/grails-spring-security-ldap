@@ -6,7 +6,7 @@ EXIT_STATUS=0
 
 ./gradlew clean check install --stacktrace || EXIT_STATUS=$?
 
-PROJECTS="retrieve-group-rules retrieve-db-roles"
+PROJECTS="retrieve-group-rules retrieve-db-roles mis-functional-test-app"
 
 cd misc-functional-test-app
 
