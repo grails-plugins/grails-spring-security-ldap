@@ -1,3 +1,5 @@
+package com.test
+
 import geb.spock.GebReportingSpec
 import grails.test.mixin.integration.Integration
 import pages.LoginPage

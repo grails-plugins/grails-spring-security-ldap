@@ -1,3 +1,6 @@
+package com.test
+
+import grails.util.Environment
 import pages.IndexPage
 import pages.LoginPage
 import pages.SecureSuperuserPage
@@ -26,6 +29,8 @@ class SecureControllerFunctionalSpec extends AbstractSecurityFunctionalSpec {
 		then:
 		at LoginPage
 
+		Environment.current
+
 		when:
 		login 'euler', 'password'
 
@@ -36,6 +41,7 @@ class SecureControllerFunctionalSpec extends AbstractSecurityFunctionalSpec {
 		to SecureUserPage
 
 		then:
+		assertContentContains 'ROLE_MATHEMATICIANS'
 		assertContentContains 'ROLE_USER'
 		assertContentDoesNotContain 'ROLE_SUPERUSER'
 
@@ -57,18 +63,42 @@ class SecureControllerFunctionalSpec extends AbstractSecurityFunctionalSpec {
 		then:
 		assertContentContains 'Please Login'
 
+		when: 'logging with a scientist'
+		login 'tesla', 'password'
+
+		then:
+		at SecureUserPage
+
+		and: 'it does not belong to group mathematicians, thus it does not have the role mathematician'
+		assertContentDoesNotContain 'ROLE_MATHEMATICIANS'
+		assertContentContains 'ROLE_USER'
+		assertContentDoesNotContain 'ROLE_SUPERUSER'
+
 		when:
-		login 'einstein', 'password'
+		logout()
+
+		then:
+		at IndexPage
+
+		when:
+		go SecureUserPage.url
+
+		then:
+		assertContentContains 'Please Login'
+
+		when:
+		login 'gauss', 'password'
 
 		then:
 		at SecureUserPage
 
 		and:
+		assertContentContains 'ROLE_MATHEMATICIANS'
 		assertContentContains 'ROLE_USER'
 		assertContentContains 'ROLE_SUPERUSER'
 
 		when:
-		to SecureUserPage
+		to SecureSuperuserPage
 
 		then:
 		assertContentContains 'ROLE_USER'
