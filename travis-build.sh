@@ -2,42 +2,39 @@
 
 set -e
 
-rm -rf build
+EXIT_STATUS=0
 
-./gradlew clean check install --stacktrace
+./gradlew clean check install --stacktrace || EXIT_STATUS=$?
 
-functional-test-app/run_functional_tests.sh
+PROJECTS="retrieve-group-rules retrieve-db-roles custom_user_details_context_mapper"
 
-if [[ -n $TRAVIS_TAG && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
+cd misc-functional-test-app
 
-	./gradlew bintrayUpload --stacktrace
+for project in $PROJECTS; do
 
-	./gradlew docs --stacktrace
+    cd $project 
 
-	git config --global user.name "$GIT_NAME"
-	git config --global user.email "$GIT_EMAIL"
-	git config --global credential.helper "store --file=~/.git-credentials"
-	echo "https://$GH_TOKEN:@github.com" > ~/.git-credentials
+    ./gradlew clean check --stacktrace || EXIT_STATUS=$?
 
-	git checkout gh-pages
+    cd ..
 
-	git rm docs/manual/spring-security-ldap-*.epub
-	mv build/docs/spring-security-ldap-*.epub docs/manual
-	git add docs/manual/spring-security-ldap-*.epub
+done
 
-	git rm docs/manual/spring-security-ldap-*.pdf
-	mv build/docs/spring-security-ldap-*.pdf docs/manual
-	git add docs/manual/spring-security-ldap-*.pdf
+cd ..
 
-	mv build/docs/index.html docs/manual
-	git add docs/manual/index.html
+if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
-	mv build/docs/ghpages.html index.html
-	git add index.html
+  echo "Publishing archives for branch $TRAVIS_BRANCH for tag $TRAVIS_TAG"
 
-	git commit -a -m "Updating docs for Travis build: https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID"
-	git push origin HEAD
-	cd ..
-	rm -rf gh-pages
+  if [[ -n $TRAVIS_TAG ]]; then
 
+    echo "Pushing build to Bintray for tag $TRAVIS_TAG"
+
+    ./gradlew bintrayUpload || EXIT_STATUS=$?
+    
+    ./publish-docs.sh
+
+  fi
 fi
+
+exit $EXIT_STATUS
