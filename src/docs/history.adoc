@@ -1,5 +1,7 @@
 === Release History
 
+* Mayember 22, 2017
+** 3.0.2 release
 * December 22, 2015
 ** 3.0.1 release
 * December 8, 2015
