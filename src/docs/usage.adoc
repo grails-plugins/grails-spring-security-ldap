@@ -114,77 +114,23 @@ There are three options for mapping LDAP attributes to `UserDetails` data (as sp
 
 Create a Groovy or Java class in `src/main/groovy` that implements http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/ldap/userdetails/UserDetailsContextMapper.html[UserDetailsContextMapper] and register it in `grails-app/conf/spring/resources.groovy`:
 
-[source,java]
+[source,groovy]
 ----
-import com.mycompany.myapp.MyUserDetailsContextMapper
-
-beans = {
-   ldapUserDetailsMapper(MyUserDetailsContextMapper) {
-      // bean attributes
-   }
-}
+include::../../misc-functional-test-app/custom_user_details_context_mapper/grails-app/conf/spring/resources.groovy[]
 ----
 
 For example, here's a custom `UserDetailsContextMapper` that extracts three additional fields from LDAP (fullname, email, and title)
 
-[source,java]
+[source,groovy]
 ----
-package com.mycompany.myapp
-
-import org.springframework.ldap.core.DirContextAdapter
-import org.springframework.ldap.core.DirContextOperations
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
-
-class MyUserDetailsContextMapper implements UserDetailsContextMapper {
-
-   UserDetails mapUserFromContext(DirContextOperations ctx, String username,
-                                  Collection authorities) {
-
-      String fullname = ctx.originalAttrs.attributes['name'].values[0]
-      String email = ctx.originalAttrs.attributes['mail'].values[0].toString().toLowerCase()
-      def title = ctx.originalAttrs.attributes['title']
-
-      new MyUserDetails(username, null, true, true, true, true,
-                        authorities, fullname, email,
-                        title == null ? '' : title.values[0])
-   }
-
-   void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
-      throw new IllegalStateException("Only retrieving data from AD is currently supported")
-   }
-}
+include::../../misc-functional-test-app/custom_user_details_context_mapper/src/main/groovy/com/mycompany/myapp/MyUserDetailsContextMapper.groovy[]
 ----
 
 and a custom `UserDetails` class to hold the extra fields:
 
-[source,java]
+[source,groovy]
 ----
-package com.mycompany.myapp
-
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.User
-
-class MyUserDetails extends User {
-
-   // extra instance variables
-   final String fullname
-   final String email
-   final String title
-
-   MyUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
-         boolean credentialsNonExpired, boolean accountNonLocked,
-         Collection<GrantedAuthority> authorities, String fullname,
-         String email, String title) {
-
-      super(username, password, enabled, accountNonExpired, credentialsNonExpired,
-            accountNonLocked, authorities)
-
-      this.fullname = fullname
-      this.email = email
-      this.title = title
-   }
-}
+include::../../misc-functional-test-app/custom_user_details_context_mapper/src/main/groovy/com/mycompany/myapp/MyUserDetails.groovy[]
 ----
 
 Here we extend the standard Spring Security `User` class for convenience, but you could also directly implement the interface or use a different base class.
