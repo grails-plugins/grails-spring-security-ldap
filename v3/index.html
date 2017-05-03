@@ -420,7 +420,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Burt Beckwith</span><br>
 <span id="email" class="email"><a href="mailto:burt@burtbeckwith.com">burt@burtbeckwith.com</a></span><br>
-<span id="revnumber">version 3.0.1</span>
+<span id="revnumber">version 3.0.2</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -462,6 +462,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="release-history">1.1. Release History</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Mayember 22, 2017</p>
+<div class="ulist">
+<ul>
+<li>
+<p>3.0.2 release</p>
+</li>
+</ul>
+</div>
+</li>
 <li>
 <p>December 22, 2015</p>
 <div class="ulist">
@@ -644,7 +654,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">dependencies {
    ...
-   compile 'org.grails.plugins:spring-security-ldap:3.0.1'
+   compile 'org.grails.plugins:spring-security-ldap:3.0.2'
 }</code></pre>
 </div>
 </div>
@@ -763,12 +773,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import com.mycompany.myapp.MyUserDetailsContextMapper
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">import com.mycompany.myapp.MyUserDetailsContextMapper
 
 beans = {
-   ldapUserDetailsMapper(MyUserDetailsContextMapper) {
-      // bean attributes
-   }
+    ldapUserDetailsMapper(MyUserDetailsContextMapper) {
+        // bean attributes
+    }
 }</code></pre>
 </div>
 </div>
@@ -777,30 +787,39 @@ beans = {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package com.mycompany.myapp
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package com.mycompany.myapp
+
+import groovy.transform.CompileStatic
 
 import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.DirContextOperations
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 
+@CompileStatic
 class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-   UserDetails mapUserFromContext(DirContextOperations ctx, String username,
-                                  Collection authorities) {
+    @Override
+    UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection&lt;? extends GrantedAuthority&gt; authorities) {
+        String email = ctx.attributes.get('mail')?.get() as String
+        String phone = ctx.attributes.get('telephoneNumber')?.get() as String
 
-      String fullname = ctx.originalAttrs.attrs['name'].values[0]
-      String email = ctx.originalAttrs.attrs['mail'].values[0].toString().toLowerCase()
-      def title = ctx.originalAttrs.attrs['title']
+        new MyUserDetails(username,
+                '',
+                true,
+                true,
+                true,
+                true,
+                authorities,
+                email,
+                phone)
+    }
 
-      new MyUserDetails(username, null, true, true, true, true,
-                        authorities, fullname, email,
-                        title == null ? '' : title.values[0])
-   }
-
-   void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
-      throw new IllegalStateException("Only retrieving data from AD is currently supported")
-   }
+    @Override
+    void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
+        throw new IllegalStateException("Only retrieving data from AD is currently supported")
+    }
 }</code></pre>
 </div>
 </div>
@@ -809,30 +828,29 @@ class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package com.mycompany.myapp
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package com.mycompany.myapp
 
+import groovy.transform.CompileStatic
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 
+@CompileStatic
 class MyUserDetails extends User {
 
-   // extra instance variables
-   final String fullname
-   final String email
-   final String title
+    // extra instance variables
+    final String email
+    final String telephone
 
-   MyUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
-         boolean credentialsNonExpired, boolean accountNonLocked,
-         Collection&lt;GrantedAuthority&gt; authorities, String fullname,
-         String email, String title) {
+    MyUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
+                  boolean credentialsNonExpired, boolean accountNonLocked,
+                  Collection&lt;GrantedAuthority&gt; authorities, String email, String telephone) {
 
-      super(username, password, enabled, accountNonExpired, credentialsNonExpired,
-            accountNonLocked, authorities)
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired,
+                accountNonLocked, authorities)
 
-      this.fullname = fullname
-      this.email = email
-      this.title = title
-   }
+        this.email = email
+        this.telephone = telephone
+    }
 }</code></pre>
 </div>
 </div>
@@ -1159,8 +1177,8 @@ class MyUserDetails extends User {
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 3.0.1<br>
-Last updated 2015-12-22 13:48:48 -05:00
+Version 3.0.2<br>
+Last updated 2017-05-03 15:27:48 UTC
 </div>
 </div>
 </body>
