@@ -51,14 +51,11 @@ class DatabaseOnlyLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator, 
 		}
 		catch (UsernameNotFoundException ignored) {
 			// just looking for roles, so ignore the UsernameNotFoundException
-			return roles ?: AuthorityUtils.NO_AUTHORITIES
 		}
 
-		if (dbDetails.authorities == null) {
-			return roles ?: AuthorityUtils.NO_AUTHORITIES
+		if (dbDetails?.authorities != null) {
+			roles.addAll(dbDetails.authorities)
 		}
-
-		roles.addAll(dbDetails.authorities)
 
 		roles
 	}
