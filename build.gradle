@@ -97,15 +97,18 @@ asciidoctor {
 	            revnumber:           project.version
 }
 
-task docs(dependsOn: asciidoctor) << {
-	File dir = file('build/docs')
+task docs(dependsOn: asciidoctor)  {
+	doLast() {
+		File dir = file('build/docs')
 
-	['pdf', 'epub'].each { String ext ->
-		File f = new File(dir, 'index.' + ext)
-		if (f.exists()) {
-			f.renameTo new File(dir, project.name + '-' + project.version + '.' + ext)
+		['pdf', 'epub'].each { String ext ->
+			File f = new File(dir, 'index.' + ext)
+			if (f.exists()) {
+				f.renameTo new File(dir, project.name + '-' + project.version + '.' + ext)
+			}
 		}
+
+		file('build/docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
 
-	file('build/docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 }
