@@ -64,7 +64,7 @@ dependencies {
 		 'spring-test', 'spring-tx'].each { exclude module: it }
 	}
 
-	compile 'org.springframework.ldap:spring-ldap-core:2.0.4.RELEASE', {
+	compile 'org.springframework.ldap:spring-ldap-core:2.3.2.RELEASE', {
 		['commons-lang', 'gsbase', 'junit', 'mockito-core', 'powermock-api-mockito',
 		 'powermock-api-support', 'powermock-core', 'powermock-module-junit4',
 		 'powermock-module-junit4-common', 'powermock-reflect', 'slf4j-log4j12', 'spring-beans',
