@@ -72,8 +72,7 @@ dependencies {
 	}
 
 	console 'org.grails:grails-console'
-
-	testCompile 'org.grails:grails-plugin-testing'
+	testCompile "org.grails:grails-web-testing-support"
 }
 
 apply from: "${rootProject.projectDir}/gradle/grailsPublish.gradle"
