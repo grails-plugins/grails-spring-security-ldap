@@ -34,7 +34,7 @@ ext {
 	grailsVersion = project.grailsVersion
 }
 
-sourceCompatibility = targetCompatibility = 1.7
+sourceCompatibility = targetCompatibility = 1.8
 
 repositories {
 	mavenLocal()
