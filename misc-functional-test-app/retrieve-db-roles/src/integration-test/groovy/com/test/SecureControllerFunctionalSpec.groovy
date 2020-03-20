@@ -1,8 +1,6 @@
 package com.test
 
-import grails.util.Environment
 import pages.IndexPage
-import pages.LoginPage
 import pages.SecureSuperuserPage
 import pages.SecureUserPage
 
