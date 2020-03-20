@@ -24,7 +24,7 @@ version = file('version.txt').text.trim()
 group 'org.grails.plugins'
 
 apply plugin: 'org.grails.grails-plugin'
-
+apply plugin: 'org.grails.grails-plugin-publish'
 apply plugin: 'org.asciidoctor.convert'
 
 apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
