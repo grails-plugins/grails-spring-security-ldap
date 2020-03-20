@@ -33,7 +33,6 @@ apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/
 
 ext {
 	grailsVersion = project.grailsVersion
-	gradleWrapperVersion = project.gradleWrapperVersion
 }
 
 sourceCompatibility = targetCompatibility = 1.7
