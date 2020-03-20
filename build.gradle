@@ -59,7 +59,6 @@ dependencies {
 
 	compile 'org.grails.plugins:spring-security-core:4.0.0'
 
-	String springSecurityVersion = '4.0.3.RELEASE'
 	compile "org.springframework.security:spring-security-ldap:$springSecurityVersion", {
 		['apacheds-core', 'apacheds-core-entry', 'apacheds-protocol-ldap', 'apacheds-protocol-shared',
 		 'apacheds-server-jndi', 'commons-logging', 'fest-assert', 'jcl-over-slf4j', 'junit',
