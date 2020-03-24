@@ -8,6 +8,12 @@ EXIT_STATUS=0
 
 PROJECTS="retrieve-group-rules retrieve-db-roles custom_user_details_context_mapper"
 
+cd functional-test-app
+
+./gradlew clean check --stacktrace --console=plain || EXIT_STATUS=$?
+
+cd ..
+
 cd misc-functional-test-app
 
 for project in $PROJECTS; do
