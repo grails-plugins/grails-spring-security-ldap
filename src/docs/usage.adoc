@@ -21,6 +21,9 @@ dependencies {
 
 Please, check https://github.com/grails-plugins/grails-spring-security-ldap/releases[Grails Spring Security LDAP releases]
 
+- **For Grails 4 applications, use 4.x releases**
+- **For Grails 3 applications, use 3.x releases**.
+
 then configure any required parameters and whatever optional parameters you want in application.yml or application.groovy. These are described in detail in the <<configuration>> section but typically you only need to set these properties:
 
 [source,yaml]
