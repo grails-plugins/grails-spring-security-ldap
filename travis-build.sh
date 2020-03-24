@@ -4,7 +4,7 @@ set -e
 
 EXIT_STATUS=0
 
-./gradlew clean check install --stacktrace || EXIT_STATUS=$?
+./gradlew clean check install --stacktrace --console=plain || EXIT_STATUS=$?
 
 PROJECTS="retrieve-group-rules retrieve-db-roles custom_user_details_context_mapper"
 
@@ -14,7 +14,7 @@ for project in $PROJECTS; do
 
     cd $project 
 
-    ./gradlew clean check --stacktrace || EXIT_STATUS=$?
+    ./gradlew clean check --stacktrace --console=plain || EXIT_STATUS=$?
 
     cd ..
 
