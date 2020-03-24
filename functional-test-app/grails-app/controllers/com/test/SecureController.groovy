@@ -1,3 +1,5 @@
+package com.test
+
 import grails.plugin.springsecurity.annotation.Secured
 
 class SecureController {

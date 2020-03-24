@@ -1,3 +1,5 @@
+package com.test
+
 import com.test.Role
 import com.test.User
 import com.test.UserRole
