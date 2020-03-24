@@ -3,13 +3,19 @@ package com.test
 import com.test.Role
 import com.test.User
 import com.test.UserRole
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class BootStrap {
+	UserService userService
+	RoleService roleService
+	UserRoleService userRoleService
+
 	def init = {
-		new User('person1', 'n/a').save(failOnError: true)
-		new User('person2', 'n/a').save(failOnError: true)
-		def person3 = new User('person3', 'n/a').save(failOnError: true)
-		def roleSuperUser = new Role('ROLE_SUPERUSER').save(failOnError: true)
-		UserRole.create person3, roleSuperUser, true
+		userService.save('person1', 'n/a')
+		userService.save('person2', 'n/a')
+		User person3 = userService.save('person3', 'n/a')
+		Role roleSuperUser = roleService.save('ROLE_SUPERUSER')
+		userRoleService.save(person3, roleSuperUser)
 	}
 }
