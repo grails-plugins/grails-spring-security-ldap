@@ -80,15 +80,16 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   # If this is the master branch then update the snapshot
   if [[ $TRAVIS_BRANCH == 'master' ]]; then
 
-    mv ../build/docs/index.html v4
+    mkdir -p v4
+    cp ../build/docs/index.html v4
     git add v4/index.html
 
-    mv ../build/docs/ghpages.html index.html
+    cp ../build/docs/ghpages.html index.html
     git add index.html
 
     mkdir -p snapshot
-    cp -r ../build/docs/. ./snapshot/
-    git add snapshot/*
+    cp ../build/docs/index.html snapshot
+    git add snapshot/index.html
 
   fi
 
@@ -96,7 +97,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
   if [[ -n $TRAVIS_TAG ]]; then
         git rm -rf latest/
         mkdir -p latest
-        cp -r ../build/docs/. ./latest/
+        cp ../build/docs/index.html latest
         git add latest/*
 
         version="$TRAVIS_TAG" # eg: v3.0.1
@@ -105,11 +106,11 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
         majorVersion="${majorVersion}x" # 3.0.x
 
         mkdir -p "$version"
-        cp -r ../build/docs/. "./$version/"
+        cp -r ../build/docs/index.html "./$version/"
         git add "$version/*"
 
         git rm -rf "$majorVersion"
-        cp -r ../build/docs/. "./$majorVersion/"
+        cp -r ../build/docs/index.html "./$majorVersion/"
         git add "$majorVersion/*"
   fi
 
