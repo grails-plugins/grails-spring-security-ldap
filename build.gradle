@@ -3,13 +3,15 @@ buildscript {
 		grailsVersion = project.grailsVersion
 	}
 	repositories {
-		mavenLocal()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 		maven { url 'https://repo.grails.org/grails/core' }
 		jcenter()
 	}
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-		classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+		classpath "org.asciidoctor:asciidoctor-gradle-jvm:3.1.0"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
 	}
 }
@@ -24,7 +26,7 @@ group 'org.grails.plugins'
 
 apply plugin: 'org.grails.grails-plugin'
 apply plugin: 'org.grails.grails-plugin-publish'
-apply plugin: 'org.asciidoctor.convert'
+apply plugin: "org.asciidoctor.jvm.convert"
 apply plugin: "com.jfrog.artifactory"
 
 ext {
@@ -78,8 +80,6 @@ apply from: "${rootProject.projectDir}/gradle/artifactoryPublish.gradle"
 apply from: "${rootProject.projectDir}/gradle/testVerbose.gradle"
 
 asciidoctor {
-	separateOutputDirs = false
-	sourceDir = file('src/docs')
 	sources {
 		include 'index.adoc'
 	}
@@ -95,9 +95,10 @@ asciidoctor {
 }
 
 task docs(dependsOn: asciidoctor)  {
+	group 'documentation'
 	doLast() {
 		File dir = file('build/docs')
-		file('build/docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
+		file('build/docs/ghpages.html') << file('src/docs/asciidoc/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
 
 }

@@ -7,4 +7,4 @@ Once you have configured your Grails application as an LDAP client you can deleg
 
 Please refer to the http://static.springsource.org/spring-security/site/docs/3.0.x/reference/ldap.html[Spring Security LDAP documentation] for details of the underlying implementation.
 
-include::history.adoc[]
+include::{includedir}/history.adoc[]

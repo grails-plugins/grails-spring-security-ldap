@@ -5,8 +5,8 @@ Burt Beckwith <burt@burtbeckwith.com>
 :lang: en
 :numbered:
 
-include::introduction.adoc[]
+include::{includedir}/introduction.adoc[]
 
-include::usage.adoc[]
+include::{includedir}/usage.adoc[]
 
-include::configuration.adoc[]
+include::{includedir}/configuration.adoc[]
