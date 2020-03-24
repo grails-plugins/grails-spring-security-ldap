@@ -10,7 +10,6 @@ buildscript {
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
 		classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-		classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
 	}
 }
@@ -85,7 +84,6 @@ asciidoctor {
 		include 'index.adoc'
 	}
 	outputDir file('build/docs')
-	backends 'html5', 'pdf'
 	attributes 'source-highlighter': 'prettify',
 	            icons:               'font',
 	            setanchors:          'true',
@@ -99,14 +97,6 @@ asciidoctor {
 task docs(dependsOn: asciidoctor)  {
 	doLast() {
 		File dir = file('build/docs')
-
-		['pdf'].each { String ext ->
-			File f = new File(dir, 'index.' + ext)
-			if (f.exists()) {
-				f.renameTo new File(dir, project.name + '-' + project.version + '.' + ext)
-			}
-		}
-
 		file('build/docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
 
