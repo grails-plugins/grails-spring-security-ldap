@@ -80,6 +80,8 @@ dependencies {
     testRuntime 'net.sourceforge.htmlunit:htmlunit:2.35.0'
 }
 
+apply from: "../gradle/testVerbose.gradle"
+
 bootRun {
     ignoreExitValue true
     jvmArgs(
