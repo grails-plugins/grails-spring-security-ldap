@@ -14,3 +14,10 @@ See [documentation](https://grails-plugins.github.io/grails-spring-security-ldap
  
 - [Online LDAP Test Server](http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/)
 - [JXplorer - Cross platform LDAP browser and editor](http://jxplorer.org/index.html)
+
+## Repository Branch Structure
+
+Branches:
+
+- `master` Grails 4 compatible versions.
+- `3.x` Grails 3 compatible versions.
