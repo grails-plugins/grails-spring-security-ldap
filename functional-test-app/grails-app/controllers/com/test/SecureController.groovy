@@ -1,10 +1,14 @@
 package com.test
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class SecureController {
 
-	def springSecurityService
+	SpringSecurityService springSecurityService
 
 	@Secured('ROLE_ADMIN')
 	def admins() {
@@ -26,6 +30,7 @@ class SecureController {
 		renderRoles()
 	}
 
+	@CompileDynamic
 	private void renderRoles() {
 		render 'You have these roles: ' + springSecurityService.principal.authorities.join(' ')
 	}

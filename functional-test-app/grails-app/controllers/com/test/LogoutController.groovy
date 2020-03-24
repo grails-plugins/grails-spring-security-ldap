@@ -2,7 +2,10 @@ package com.test
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 
+@CompileStatic
 @Secured('permitAll')
 class LogoutController {
 
@@ -10,6 +13,7 @@ class LogoutController {
 
 	def index() {}
 
+	@CompileDynamic
 	def logout() {
 		redirect uri: SpringSecurityUtils.securityConfig.logout.filterProcessesUrl
 	}
