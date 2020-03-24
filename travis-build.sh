@@ -87,6 +87,7 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
     cp ../build/docs/ghpages.html index.html
     git add index.html
 
+    git rm -rf snapshot/
     mkdir -p snapshot
     cp ../build/docs/index.html snapshot
     git add snapshot/index.html
