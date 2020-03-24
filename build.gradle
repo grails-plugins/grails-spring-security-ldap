@@ -77,6 +77,7 @@ dependencies {
 
 apply from: "${rootProject.projectDir}/gradle/grailsPublish.gradle"
 apply from: "${rootProject.projectDir}/gradle/artifactoryPublish.gradle"
+apply from: "${rootProject.projectDir}/gradle/testVerbose.gradle"
 
 asciidoctor {
 	separateOutputDirs = false

@@ -76,6 +76,7 @@ dependencies {
     testCompile "org.seleniumhq.selenium:htmlunit-driver:2.35.1"
     testRuntime 'net.sourceforge.htmlunit:htmlunit:2.35.0'
 }
+apply from: "../../gradle/testVerbose.gradle"
 
 bootRun {
     ignoreExitValue true
