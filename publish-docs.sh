@@ -18,16 +18,16 @@ git clone https://${GH_TOKEN}@github.com/grails-plugins/grails-spring-security-l
 
 cd gh-pages
 
-git rm v3/spring-security-ldap-*.epub
-mv  ../build/docs/spring-security-ldap-*.epub v3
-git add v3/spring-security-ldap-*.epub
+git rm v4/spring-security-ldap-*.epub
+mv  ../build/docs/spring-security-ldap-*.epub v4
+git add v4/spring-security-ldap-*.epub
 
-git rm v3/spring-security-ldap-*.pdf
-mv ../build/docs/spring-security-ldap-*.pdf v3
-git add v3/spring-security-ldap-*.pdf
+git rm v4/spring-security-ldap-*.pdf
+mv ../build/docs/spring-security-ldap-*.pdf v4
+git add v4/spring-security-ldap-*.pdf
 
-mv ../build/docs/index.html v3
-git add v3/index.html
+mv ../build/docs/index.html v4
+git add v4/index.html
 
 mv ../build/docs/ghpages.html index.html
 git add index.html
