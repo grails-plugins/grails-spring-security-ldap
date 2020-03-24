@@ -4,7 +4,7 @@ import geb.Page
 
 class LogoutPage extends Page {
 
-	static url = 'logout'
+	static url = '/logout'
 
 	static at = { title == 'Logout' }
 
