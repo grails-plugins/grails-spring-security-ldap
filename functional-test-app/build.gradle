@@ -50,18 +50,16 @@ dependencies {
 	String pluginVersion = file('../version.txt').text.trim()
 	compile 'org.grails.plugins:spring-security-ldap:' + pluginVersion
 
-	String seleniumVersion = '2.47.1'
 	testCompile 'org.grails:grails-plugin-testing'
-	testCompile 'org.grails.plugins:geb'
-//	testCompile 'com.github.detro:phantomjsdriver:1.2.0'
-	testCompile 'com.codeborne:phantomjsdriver:1.2.1' // TODO switch back to com.github.detro:phantomjsdriver when this
-	                                                  // issue is resolved: https://github.com/detro/ghostdriver/issues/397
 
-	['chrome', 'firefox', 'htmlunit'].each { String name ->
-		testCompile "org.seleniumhq.selenium:selenium-${name}-driver:$seleniumVersion"
-	}
-
-	testCompile 'org.gebish:geb-core:0.12.1'
+    testCompile "org.grails.plugins:geb"
+    testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+    testCompile "org.seleniumhq.selenium:selenium-api:3.141.59"
+    testCompile "org.seleniumhq.selenium:selenium-support:3.141.59"
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
+    testCompile "org.seleniumhq.selenium:htmlunit-driver:2.35.1"
+    testRuntime 'net.sourceforge.htmlunit:htmlunit:2.35.0'
 
 	compile 'org.grails.plugins:ldap-server:1.0.0'
 

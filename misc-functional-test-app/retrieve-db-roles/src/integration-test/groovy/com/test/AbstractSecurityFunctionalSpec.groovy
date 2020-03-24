@@ -1,6 +1,6 @@
 package com.test
 
-import geb.spock.GebReportingSpec
+import geb.spock.GebSpec
 import grails.test.mixin.integration.Integration
 import pages.LoginPage
 import pages.LogoutPage
@@ -8,7 +8,7 @@ import spock.lang.Stepwise
 
 @Integration
 @Stepwise
-abstract class AbstractSecurityFunctionalSpec extends GebReportingSpec {
+abstract class AbstractSecurityFunctionalSpec extends GebSpec {
 
 	void setup() {
 		logout()
