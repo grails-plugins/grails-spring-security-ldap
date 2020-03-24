@@ -79,6 +79,7 @@ dependencies {
 
 	testCompile 'org.grails:grails-plugin-testing'
 }
+apply from: "gradle/testVerbose.gradle"
 
 asciidoctor {
 	separateOutputDirs = false

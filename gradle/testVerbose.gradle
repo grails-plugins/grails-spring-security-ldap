@@ -1,0 +1,11 @@
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat = 'full'
+        events 'passed', 'failed'//, 'standardOut', 'standardError'
+    }
+
+    reports.html.enabled = !System.getenv("TRAVIS")
+    reports.junitXml.enabled = !System.getenv("TRAVIS")
+
+    beforeTest { descriptor -> logger.quiet " -- $descriptor" }
+}

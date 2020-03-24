@@ -53,6 +53,7 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:2.53.1"
     testCompile "com.codeborne:phantomjsdriver:1.3.0"
 }
+apply from: "../../gradle/testVerbose.gradle"
 
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')

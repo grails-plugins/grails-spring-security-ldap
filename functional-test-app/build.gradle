@@ -67,3 +67,4 @@ dependencies {
 
 	console 'org.grails:grails-console'
 }
+apply from: "../gradle/testVerbose.gradle"
